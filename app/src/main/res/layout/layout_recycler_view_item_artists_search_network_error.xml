@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -11,20 +12,31 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorErrorBackground"
         android:gravity="center"
-        android:minHeight="?attr/actionBarSize"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="4dp">
 
         <Button
             android:id="@+id/buttonRetry"
-            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:onClick="@{() -> viewModel.retry()}"
+            android:layout_gravity="left|center|center_vertical"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:onClick="@{(v) -> viewModel.retry(v)}"
             android:text="@string/retry" />
+
+        <TextView
+            android:id="@+id/textViewErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:gravity="center_vertical"
+            android:text="@{viewModel.errorMessageLiveData}"
+            android:textColor="@android:color/white"
+            tools:text="Error Message" />
 
     </LinearLayout>
 

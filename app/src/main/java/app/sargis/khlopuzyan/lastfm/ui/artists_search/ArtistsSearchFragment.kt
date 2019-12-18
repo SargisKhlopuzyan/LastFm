@@ -65,7 +65,11 @@ class ArtistsSearchFragment : DaggerFragmentX() {
     }
 
     private fun setupSearchView() {
-        binding.searchView.isIconified = false
+        val requestFocus: Boolean = arguments?.getBoolean(ARG_REQUEST_FOCUS, false) ?: false
+        if (requestFocus) {
+            binding.searchView.isIconified = false
+            arguments?.putBoolean(ARG_REQUEST_FOCUS, false)
+        }
     }
 
     private fun setupObservers() {
@@ -78,7 +82,7 @@ class ArtistsSearchFragment : DaggerFragmentX() {
                 .show()
         }
 
-        viewModel.searchClickLiveData.observe(this) {
+        viewModel.hideKeyboardLiveData.observe(this) {
             hideKeyboard(it)
         }
     }
@@ -103,7 +107,13 @@ class ArtistsSearchFragment : DaggerFragmentX() {
     }
 
     companion object {
-        fun newInstance() = ArtistsSearchFragment()
+
+        private const val ARG_REQUEST_FOCUS = "arg_request_focus"
+        fun newInstance(requestFocus: Boolean = false) = ArtistsSearchFragment().apply {
+            arguments = Bundle().apply {
+                putBoolean(ARG_REQUEST_FOCUS, requestFocus)
+            }
+        }
     }
 
 }

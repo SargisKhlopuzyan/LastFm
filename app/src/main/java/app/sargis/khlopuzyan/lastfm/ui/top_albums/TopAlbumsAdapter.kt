@@ -84,6 +84,9 @@ class TopAlbumsAdapter(
         when (getItemViewType(position)) {
 
             R.layout.layout_recycler_view_item_top_albums -> {
+                if (networkState is NetworkState.Failure && (itemCount > 1) && (position == itemCount - 2)) {
+                    viewModel.networkState.value = NetworkState.Loaded
+                }
                 (holder as TopAlbumsViewHolder).bindItem(getItem(position), viewModel)
             }
 
@@ -133,7 +136,8 @@ class TopAlbumsAdapter(
 
     override fun setNetworkState(newNetworkState: NetworkState?) {
         networkState = newNetworkState
-        notifyItemChanged(0)
+        val pos = if (itemCount > 0) itemCount - 1 else 0
+        notifyItemChanged(pos)
     }
 
     class TopAlbumsViewHolder(private val binding: LayoutRecyclerViewItemTopAlbumsBinding) :

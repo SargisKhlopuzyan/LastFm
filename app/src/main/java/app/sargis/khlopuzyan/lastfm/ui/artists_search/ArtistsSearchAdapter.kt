@@ -85,6 +85,9 @@ class ArtistsSearchAdapter(
         when (getItemViewType(position)) {
 
             R.layout.layout_recycler_view_item_artists_search -> {
+                if (networkState is NetworkState.Failure && (itemCount > 1) && (position == itemCount - 2)) {
+                    viewModel.networkState.value = NetworkState.Loaded
+                }
                 (holder as ArtistViewHolder).bindItem(getItem(position), viewModel)
             }
 
@@ -134,7 +137,8 @@ class ArtistsSearchAdapter(
 
     override fun setNetworkState(newNetworkState: NetworkState?) {
         networkState = newNetworkState
-        notifyItemChanged(0)
+        val pos = if (itemCount > 0) itemCount - 1 else 0
+        notifyItemChanged(pos)
     }
 
     // ViewHolder

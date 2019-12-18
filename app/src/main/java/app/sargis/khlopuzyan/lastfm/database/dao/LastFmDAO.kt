@@ -21,16 +21,16 @@ interface LastFmDAO {
     @Query("DELETE FROM albums WHERE name = :name")
     fun deleteAlbum(name: String?): Int
 
-    @Query("SELECT * FROM albums WHERE name = :name")
-    fun getAlbumByName(name: String?): Album?
+    @Query("SELECT * FROM albums WHERE name = :albumName")
+    fun getAlbumByName(albumName: String?): Album?
 
     @Query("SELECT * FROM albums WHERE artist LIKE :artistName")
     fun getAllMatchedAlbums(artistName: String?): List<Album>
 
     @Query("SELECT * FROM albums")
-    fun getAllCachedAlbumsLiveData(): LiveData<List<Album>?>
-
-    @Query("SELECT * FROM albums")
     fun getAllCachedAlbums(): List<Album>
+    @Query("SELECT * FROM albums")
+
+    fun getAllCachedAlbumsLiveData(): LiveData<List<Album>?>
 
 }

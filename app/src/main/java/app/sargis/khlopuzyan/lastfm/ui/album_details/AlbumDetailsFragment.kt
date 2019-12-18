@@ -43,7 +43,7 @@ class AlbumDetailsFragment : DaggerFragmentX() {
 
     companion object {
 
-        const val ARG_ALBUM = "arg_album"
+        private const val ARG_ALBUM = "arg_album"
         fun newInstance(album: Album) = AlbumDetailsFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(ARG_ALBUM, album)

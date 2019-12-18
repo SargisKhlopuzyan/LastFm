@@ -27,6 +27,7 @@ class TopAlbumsViewModel constructor(
     val networkState = MutableLiveData<NetworkState>()
 
     var topAlbumsLiveData: MutableLiveData<MutableList<Album>> = MutableLiveData(mutableListOf())
+    val errorMessageLiveData = MutableLiveData<String>()
 
     fun retry() {
         searchMoreAlbums()
@@ -169,13 +170,13 @@ class TopAlbumsViewModel constructor(
                 }
 
                 is Result.Error -> {
-                    showToastLiveData.value =
+                    errorMessageLiveData.value =
                         "Something went wrong!\nError code: ${resultTopAlbums.errorCode}"
                     networkState.value = NetworkState.Failure(null/*resultTopAlbums.errorCode*/)
                 }
 
                 is Result.Failure -> {
-                    showToastLiveData.value =
+                    errorMessageLiveData.value =
                         "Something went wrong!\nError message: ${resultTopAlbums.error?.message}"
                     networkState.value = NetworkState.Failure(resultTopAlbums.error)
                 }

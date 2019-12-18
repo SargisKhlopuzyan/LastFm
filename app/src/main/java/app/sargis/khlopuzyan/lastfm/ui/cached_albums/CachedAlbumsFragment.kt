@@ -87,7 +87,7 @@ class CachedAlbumsFragment : DaggerFragmentX() {
         activity?.supportFragmentManager?.commit {
             replace(
                 android.R.id.content,
-                ArtistsSearchFragment.newInstance(),
+                ArtistsSearchFragment.newInstance(requestFocus = true),
                 "artists_search_fragment"
             ).addToBackStack("artists_search")
         }
