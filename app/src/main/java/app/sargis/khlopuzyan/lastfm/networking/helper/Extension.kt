@@ -12,10 +12,10 @@ import retrofit2.Response
 fun <T : Any> Response<T>.getResult(): Result<T> {
     return if (this.isSuccessful) {
         val body = this.body()
-        if (body == null) {
-            Result.Error(this.code(), this.errorBody())
-        } else {
+        if (body != null) {
             Result.Success(body)
+        } else {
+            Result.Error(this.code(), this.errorBody())
         }
     } else {
         Result.Failure(HttpException(this))

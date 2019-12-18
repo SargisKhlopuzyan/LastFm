@@ -30,7 +30,6 @@ class TopAlbumsViewModel constructor(
     var topAlbumsLiveData: MutableLiveData<MutableList<Album>> = MutableLiveData(mutableListOf())
 
     fun retry() {
-//        loadedPageIndex = 0
         searchMoreAlbums()
     }
 
@@ -198,7 +197,6 @@ class TopAlbumsViewModel constructor(
         }
 
         viewModelScope.launch {
-            //            val cachedTopAlbums = topAlbumsRepository.searchCachedTopAlbumsForArtistInCache(artistName)
             val allCachedTopAlbums = topAlbumsRepository.getAllTopAlbumsFromCache()
 
             val filteredCachedAlbums = allCachedTopAlbums.filter { cachedAlbum ->
@@ -215,12 +213,6 @@ class TopAlbumsViewModel constructor(
             }
         }
     }
-
-    fun hasExtraRow(): Boolean {
-        return loadedPageIndex == 0 || loadedPageIndex < availablePages
-    }
-
-    //
 
     private fun handleSearchResult(topalbums: Topalbums?) {
 
@@ -249,6 +241,10 @@ class TopAlbumsViewModel constructor(
             availablePages = 200
         }
         this.availablePages = availablePages
+    }
+
+    fun hasExtraRow(): Boolean {
+        return (networkState.value != null && networkState.value != NetworkState.Loaded) || (loadedPageIndex < availablePages)
     }
 
 }

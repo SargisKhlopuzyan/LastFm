@@ -17,7 +17,7 @@ class ArtistsSearchViewModel constructor(
     private val searchRepository: ArtistsSearchRepository
 ) : ViewModel() {
 
-    private var artistName: String? = null
+    private var artistName: String = ""
     private var availablePages: Int = 0
     private var loadedPageIndex: Int = 0
     private var searchQuery: String = ""
@@ -36,7 +36,6 @@ class ArtistsSearchViewModel constructor(
     }
 
     fun retry() {
-//        loadedPageIndex = 0
         searchMoreArtists()
     }
 
@@ -88,18 +87,18 @@ class ArtistsSearchViewModel constructor(
                     }
                 }
             }
-
         }
     }
 
     private fun handleSearchResult(results: Results?) {
 
+        var artists: MutableList<Artist>?
         if (results?.artistmatches?.artist == null) {
-            return
+            artists = mutableListOf()
+        } else {
+            artists = artistsLiveData.value
+            artists?.addAll(results.artistmatches.artist)
         }
-
-        var artists: MutableList<Artist>? = artistsLiveData.value
-        artists?.addAll(results.artistmatches.artist)
 
         artistsLiveData.value = artists
     }
@@ -107,7 +106,7 @@ class ArtistsSearchViewModel constructor(
 
     private fun setPageInfo(results: Results?) {
 
-        this.artistName = results?.opensearchQuery?.searchTerms
+        this.artistName = results?.opensearchQuery?.searchTerms ?: ""
 
         val startPage = results?.opensearchQuery?.startPage?.toInt() ?: 0
         loadedPageIndex = startPage
@@ -122,9 +121,7 @@ class ArtistsSearchViewModel constructor(
         this.availablePages = availablePages
     }
 
-
-    fun hasExtraRow(): Boolean {
-        return loadedPageIndex == 0 || loadedPageIndex < availablePages
-    }
+    fun hasExtraRow(): Boolean =
+        (networkState.value != null && networkState.value != NetworkState.Loaded) || (loadedPageIndex < availablePages)
 
 }
