@@ -41,7 +41,7 @@
                     app:expandedTitleMarginStart="8dp"
                     app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                    app:title="@{viewModel.albumLiveData.artist.name + ` - ` + viewModel.albumLiveData.name}"
+                    app:title="@{(viewModel.albumLiveData.artist.name  ?? ``) + ` - ` + (viewModel.albumLiveData.name ?? ``)}"
                     tools:title="Artist">
 
                     <ImageView

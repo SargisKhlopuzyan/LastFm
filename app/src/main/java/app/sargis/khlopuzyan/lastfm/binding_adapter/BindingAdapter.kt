@@ -62,9 +62,18 @@ fun TextView.setTrackList(tracks: List<Track>?) {
 
 @BindingAdapter("setImageResource")
 fun ImageView.setImageResource(resource: String?) {
-    if (resource == null) return
+
+    val placeholderId: Int =
+        if (id == R.id.imageViewArtist) R.drawable.ic_artist else R.drawable.ic_album
+
+    if (resource == null) {
+        setImageResource(placeholderId)
+        return
+    }
+
     Glide.with(this.context)
         .load(resource)
+        .placeholder(placeholderId)
         .apply(RequestOptions().dontTransform())
         .listener(object : RequestListener<Drawable> {
             override fun onLoadFailed(

@@ -21,7 +21,7 @@
         android:background="@android:color/white"
         android:minHeight="?attr/actionBarSize"
         android:onClick="@{() -> viewModel.onArtistClick(artist)}"
-        android:padding="8dp">
+        android:padding="12dp">
 
         <ImageView
             android:id="@+id/imageViewArtist"
@@ -32,7 +32,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:setImageResource="@{artist.image[1].text}"
+            app:setImageResource="@{artist.image[1].text ?? ``}"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
