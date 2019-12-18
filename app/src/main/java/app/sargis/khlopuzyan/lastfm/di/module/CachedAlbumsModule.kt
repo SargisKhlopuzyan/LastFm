@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import app.sargis.khlopuzyan.lastfm.di.annotation.ViewModelKey
 import app.sargis.khlopuzyan.lastfm.repository.CachedAlbumsRepository
-import app.sargis.khlopuzyan.lastfm.ui.cachedAlbums.CachedAlbumsFragment
-import app.sargis.khlopuzyan.lastfm.ui.cachedAlbums.CachedAlbumsViewModel
+import app.sargis.khlopuzyan.lastfm.ui.cached_albums.CachedAlbumsFragment
+import app.sargis.khlopuzyan.lastfm.ui.cached_albums.CachedAlbumsViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector

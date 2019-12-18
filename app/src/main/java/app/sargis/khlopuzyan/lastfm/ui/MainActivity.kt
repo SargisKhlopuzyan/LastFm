@@ -1,9 +1,9 @@
 package app.sargis.khlopuzyan.lastfm.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import app.sargis.khlopuzyan.lastfm.ui.cachedAlbums.CachedAlbumsFragment
+import app.sargis.khlopuzyan.lastfm.ui.cached_albums.CachedAlbumsFragment
 
 class MainActivity : AppCompatActivity() {
 

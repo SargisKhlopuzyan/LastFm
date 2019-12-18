@@ -1,6 +1,5 @@
 package app.sargis.khlopuzyan.lastfm.ui.artists_search
 
-import android.util.Log
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -125,7 +124,6 @@ class ArtistsSearchViewModel constructor(
 
 
     fun hasExtraRow(): Boolean {
-        Log.e("LOG_TAG", "hasExtraRow -> $loadedPageIndex || $loadedPageIndex || $availablePages")
         return loadedPageIndex == 0 || loadedPageIndex < availablePages
     }
 

@@ -1,4 +1,4 @@
-package app.sargis.khlopuzyan.lastfm.ui.cachedAlbums
+package app.sargis.khlopuzyan.lastfm.ui.cached_albums
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData

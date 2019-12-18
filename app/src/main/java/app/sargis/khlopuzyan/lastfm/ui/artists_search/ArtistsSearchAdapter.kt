@@ -52,11 +52,12 @@ class ArtistsSearchAdapter(
 
             R.layout.layout_recycler_view_item_artists_search_network_error -> {
 
-                val binding: LayoutRecyclerViewItemArtistsSearchNetworkErrorBinding = DataBindingUtil.inflate(
-                    LayoutInflater.from(parent.context),
-                    R.layout.layout_recycler_view_item_artists_search_network_error,
-                    parent, false
-                )
+                val binding: LayoutRecyclerViewItemArtistsSearchNetworkErrorBinding =
+                    DataBindingUtil.inflate(
+                        LayoutInflater.from(parent.context),
+                        R.layout.layout_recycler_view_item_artists_search_network_error,
+                        parent, false
+                    )
                 NetworkErrorViewHolder(binding)
             }
 
@@ -94,9 +95,9 @@ class ArtistsSearchAdapter(
                 }
             }
 
-            R.layout.layout_recycler_view_item_artists_search_network_error -> (holder as NetworkErrorViewHolder).bind(
-                viewModel
-            )
+            R.layout.layout_recycler_view_item_artists_search_network_error -> {
+                (holder as NetworkErrorViewHolder).bind(viewModel)
+            }
         }
     }
 

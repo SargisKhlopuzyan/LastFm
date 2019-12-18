@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="app.sargis.khlopuzyan.lastfm.ui.cachedAlbums.CachedAlbumsViewModel" />
+            type="app.sargis.khlopuzyan.lastfm.ui.cached_albums.CachedAlbumsViewModel" />
 
     </data>
 

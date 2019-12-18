@@ -1,9 +1,8 @@
-package app.sargis.khlopuzyan.lastfm.ui.cachedAlbums
+package app.sargis.khlopuzyan.lastfm.ui.cached_albums
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import app.sargis.khlopuzyan.lastfm.R
 import app.sargis.khlopuzyan.lastfm.databinding.LayoutRecyclerViewItemCachedAlbumsBinding
@@ -17,7 +16,7 @@ import app.sargis.khlopuzyan.lastfm.util.NetworkState
  * @author Sargis Khlopuzyan (sargis.khlopuzyan@gmail.com)
  */
 class CachedAlbumsAdapter(
-    val viewModel: ViewModel
+    val viewModel: CachedAlbumsViewModel
 ) : RecyclerView.Adapter<CachedAlbumsAdapter.ViewHolder>(), BindableAdapter<List<Album>> {
 
     private var storedAlbums = mutableListOf<Album>()
@@ -44,6 +43,7 @@ class CachedAlbumsAdapter(
     override fun setItems(items: List<Album>) {
         storedAlbums.clear()
         storedAlbums.addAll(items)
+        //TODO
         notifyDataSetChanged()
     }
 
@@ -55,9 +55,9 @@ class CachedAlbumsAdapter(
 
         var binding: LayoutRecyclerViewItemCachedAlbumsBinding = binding
 
-        fun bindData(album: Album, viewModel: ViewModel) {
+        fun bindData(album: Album, viewModel: CachedAlbumsViewModel) {
             binding.album = album
-            binding.viewModel = viewModel as CachedAlbumsViewModel
+            binding.viewModel = viewModel
             binding.textViewAlbum.text = album.name
             binding.textViewArtist.text = album.name
         }
