@@ -1,14 +1,13 @@
 package app.sargis.khlopuzyan.lastfm.ui.top_albums
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.sargis.khlopuzyan.lastfm.helper.SingleLiveEvent
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Attr
-import app.sargis.khlopuzyan.lastfm.networking.callback.Result
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Topalbums
+import app.sargis.khlopuzyan.lastfm.networking.callback.Result
 import app.sargis.khlopuzyan.lastfm.repository.TopAlbumsRepository
 import app.sargis.khlopuzyan.lastfm.util.AlbumCacheState
 import app.sargis.khlopuzyan.lastfm.util.NetworkState
@@ -64,15 +63,12 @@ class TopAlbumsViewModel constructor(
     fun onAlbumCacheActionClick(album: Album) {
         when (album.albumCacheState) {
             AlbumCacheState.NotCached -> {
-                Log.e("LOG_TAG", "onSaveDeleteTopAlbumClick -> NotSaved")
                 saveAlbumInCache(album)
             }
             AlbumCacheState.Cached -> {
-                Log.e("LOG_TAG", "onSaveDeleteTopAlbumClick -> Saved")
                 deleteAlbumFromCache(album)
             }
             else -> {
-                Log.e("LOG_TAG", "onSaveDeleteTopAlbumClick -> else")
             }
         }
     }
@@ -92,17 +88,20 @@ class TopAlbumsViewModel constructor(
                 is Result.Success -> {
                     album.albumCacheState = AlbumCacheState.Cached
                     album.tracks = albumInfo.data.album?.tracks?.track
-                    val id = topAlbumsRepository.saveTopAlbumInCache(album)
-                    Log.e("LOG_TAG", "saveAlbumInCache -> id: $id")
+                    topAlbumsRepository.saveTopAlbumInCache(album)
                     album.albumCacheState = AlbumCacheState.InProcess
                     setAnimationState(album, index, AlbumCacheState.Cached)
                 }
 
                 is Result.Error -> {
+                    showToastLiveData.value =
+                        "Unable to save album!\nError code: ${albumInfo.errorCode}"
                     setAnimationState(album, index, AlbumCacheState.NotCached)
                 }
 
                 is Result.Failure -> {
+                    showToastLiveData.value =
+                        "Unable to save album!\nError message: ${albumInfo.error?.message}"
                     setAnimationState(album, index, AlbumCacheState.NotCached)
                 }
             }
@@ -112,12 +111,10 @@ class TopAlbumsViewModel constructor(
     private fun deleteAlbumFromCache(album: Album) {
 
         viewModelScope.launch {
-
             val index: Int = topAlbumsLiveData.value?.indexOf(album)!!
             setAnimationState(album, index, AlbumCacheState.InProcess)
 
-            val id = topAlbumsRepository.deleteTopAlbumFromCache(album)
-            Log.e("LOG_TAG", "deleteAlbumFromCache -> index: $index || id: $id")
+            topAlbumsRepository.deleteTopAlbumFromCache(album)
             setAnimationState(album, index, AlbumCacheState.NotCached)
         }
     }
@@ -126,11 +123,6 @@ class TopAlbumsViewModel constructor(
 
         var newAlbum = album.copy(albumCacheState = albumCacheState)
         val newTopAlbums: MutableList<Album> = mutableListOf()
-
-        Log.e(
-            "LOG_TAG",
-            "setAnimationState -> album: ${album.albumCacheState} || newAlbum: ${newAlbum.albumCacheState}"
-        )
 
         newTopAlbums.addAll(topAlbumsLiveData.value!!)
         newTopAlbums[index] = newAlbum
@@ -192,38 +184,41 @@ class TopAlbumsViewModel constructor(
         searchedTopAlbums: List<Album>?
     ) {
 
-        if (searchedTopAlbums == null) {
-            return
-        }
+        searchedTopAlbums?.let {
 
-        viewModelScope.launch {
-            val allCachedTopAlbums = topAlbumsRepository.getAllTopAlbumsFromCache()
+            viewModelScope.launch {
 
-            val filteredCachedAlbums = allCachedTopAlbums.filter { cachedAlbum ->
-                cachedAlbum.artist?.name?.contains(artistName, ignoreCase = true) ?: false
-            }
+                val allCachedTopAlbums =
+                    topAlbumsRepository.getAllTopAlbumsFromCache() ?: return@launch
 
-            for (searchedTopAlbum in searchedTopAlbums) {
-                for (cacheTopAlbum in filteredCachedAlbums) {
-                    if (searchedTopAlbum.name == cacheTopAlbum.name) {
-                        searchedTopAlbum.albumCacheState = AlbumCacheState.Cached
-                        break
+                val filteredCachedAlbums = allCachedTopAlbums.filter { cachedAlbum ->
+                    cachedAlbum.artist?.name?.contains(artistName, ignoreCase = true) ?: false
+                }
+
+                for (searchedTopAlbum in searchedTopAlbums) {
+                    for (cacheTopAlbum in filteredCachedAlbums) {
+                        if (searchedTopAlbum.name == cacheTopAlbum.name) {
+                            searchedTopAlbum.albumCacheState = AlbumCacheState.Cached
+                            break
+                        }
                     }
                 }
             }
         }
+
     }
 
     private fun handleSearchResult(topalbums: Topalbums?) {
 
+        var albums: MutableList<Album>?
         if (topalbums?.albums == null) {
-            return
+            albums = mutableListOf()
+        } else {
+            albums = topAlbumsLiveData.value
+            albums?.addAll(topalbums.albums)
         }
 
-        var artists: MutableList<Album>? = topAlbumsLiveData.value
-        artists?.addAll(topalbums.albums)
-
-        topAlbumsLiveData.value = artists
+        topAlbumsLiveData.value = albums
     }
 
 

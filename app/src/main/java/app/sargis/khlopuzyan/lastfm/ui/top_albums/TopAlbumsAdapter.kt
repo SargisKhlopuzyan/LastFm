@@ -124,8 +124,12 @@ class TopAlbumsAdapter(
         }
     }
 
-    override fun setItems(items: List<Album>) {
-        submitList(items)
+    override fun setItems(items: List<Album>?) {
+        if (items != null) {
+            submitList(items)
+        } else {
+            submitList(listOf())
+        }
     }
 
     override fun setNetworkState(newNetworkState: NetworkState?) {
@@ -174,14 +178,6 @@ class TopAlbumsAdapter(
 class DiffCallback : DiffUtil.ItemCallback<Album?>() {
 
     override fun areItemsTheSame(oldItem: Album, newItem: Album): Boolean {
-
-        if (oldItem.name == newItem.name && oldItem.albumCacheState != newItem.albumCacheState) {
-            Log.e(
-                "LOG_TAG",
-                "** areItemsTheSame -> oldItem: ${oldItem.albumCacheState} |*| newItem: ${newItem.albumCacheState}"
-            )
-        }
-
         return oldItem.name == newItem.name && oldItem.albumCacheState == newItem.albumCacheState
     }
 

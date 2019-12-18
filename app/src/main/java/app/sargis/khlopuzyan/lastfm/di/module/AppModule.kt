@@ -68,8 +68,7 @@ abstract class AppModule {
             databaseManager: DatabaseManager
         ): CachedAlbumsRepository =
             CachedAlbumsRepositoryImpl(
-                databaseManager,
-                CoroutineScope(Job() + Dispatchers.IO)
+                databaseManager
             )
 
         @Provides

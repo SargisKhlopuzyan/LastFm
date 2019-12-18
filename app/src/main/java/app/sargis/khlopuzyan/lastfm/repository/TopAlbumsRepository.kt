@@ -21,7 +21,7 @@ interface TopAlbumsRepository {
 
     suspend fun searchAlbumInfo(artist: String, album: String): Result<ResultAlbumInfo>
 
-    suspend fun getAllTopAlbumsFromCache(): List<Album>
+    suspend fun getAllTopAlbumsFromCache(): List<Album>?
 
     suspend fun saveTopAlbumInCache(album: Album): Long
 
@@ -58,7 +58,7 @@ class TopAlbumsRepositoryImpl(
         }
 
     override suspend fun getAllTopAlbumsFromCache(): List<Album> =
-        databaseManager.getAllAlbumsFromDatabase()
+        databaseManager.getAllCachedAlbumsFromDatabase()
 
     override suspend fun saveTopAlbumInCache(album: Album): Long =
         databaseManager.saveAlbumInDatabase(album)

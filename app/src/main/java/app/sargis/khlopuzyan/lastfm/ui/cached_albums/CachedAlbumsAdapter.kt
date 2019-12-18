@@ -40,14 +40,16 @@ class CachedAlbumsAdapter(
         holder.bindData(storedAlbums[position], viewModel)
     }
 
-    override fun setItems(items: List<Album>) {
+    override fun setItems(items: List<Album>?) {
         storedAlbums.clear()
-        storedAlbums.addAll(items)
-        //TODO
+        items?.let {
+            storedAlbums.addAll(items)
+        }
         notifyDataSetChanged()
     }
 
     override fun setNetworkState(networkState: NetworkState?) {
+
     }
 
     class ViewHolder(binding: LayoutRecyclerViewItemCachedAlbumsBinding) :

@@ -42,7 +42,6 @@ class CachedAlbumsFragment : DaggerFragmentX() {
         setupToolbar()
         setupRecyclerView()
         setupObservers()
-        viewModel.loadLocallyStoredAlbums()
     }
 
     private fun setupToolbar() {

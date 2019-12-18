@@ -28,7 +28,7 @@ import com.bumptech.glide.request.target.Target
  * @author Sargis Khlopuzyan (sargis.khlopuzyan@gmail.com)
  */
 @BindingAdapter("data")
-fun <T> RecyclerView.setRecyclerViewData(items: T) {
+fun <T> RecyclerView.setRecyclerViewData(items: T?) {
     if (adapter is BindableAdapter<*>) {
         @Suppress("UNCHECKED_CAST")
         (adapter as BindableAdapter<T>).setItems(items)

@@ -26,17 +26,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingRight="8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingRight="8dp">
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/searchView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:defaultQueryHint="Type artist name"
+                    app:iconifiedByDefault="false"
                     app:searchHintIcon="@null"
                     app:searchIcon="@null"
-                    android:layout_weight="1"
-                    app:iconifiedByDefault="false"
                     app:setOnQueryTextListener="@{viewModel.onQueryTextListener}" />
 
                 <Button

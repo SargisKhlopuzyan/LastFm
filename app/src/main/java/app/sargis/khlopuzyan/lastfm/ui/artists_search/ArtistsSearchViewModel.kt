@@ -23,6 +23,7 @@ class ArtistsSearchViewModel constructor(
     private var searchQuery: String = ""
 
     val openTopAlbumsLiveData: SingleLiveEvent<String> = SingleLiveEvent()
+    val showToastLiveData: SingleLiveEvent<String> = SingleLiveEvent()
     val networkState = MutableLiveData<NetworkState>()
 
     val artistsLiveData = MutableLiveData<MutableList<Artist>>(mutableListOf())
@@ -78,11 +79,15 @@ class ArtistsSearchViewModel constructor(
                     }
 
                     is Result.Error -> {
+                        showToastLiveData.value =
+                            "Something went wrong!\nError code: ${resultTopAlbums.errorCode}"
                         networkState.value =
                             NetworkState.Failure(null /*resultTopAlbums.errorCode*/)
                     }
 
                     is Result.Failure -> {
+                        showToastLiveData.value =
+                            "Something went wrong!\nError message: ${resultTopAlbums.error?.message}"
                         networkState.value = NetworkState.Failure(resultTopAlbums.error)
                     }
                 }

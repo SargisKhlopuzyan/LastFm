@@ -1,6 +1,7 @@
 package app.sargis.khlopuzyan.lastfm.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
 import javax.inject.Inject
 
@@ -27,8 +28,12 @@ class DatabaseManager @Inject constructor(var context: Context) {
         return LastFmDatabase.getInstance(context).getLastFmDAO().getAllMatchedAlbums(artistName)
     }
 
-    fun getAllAlbumsFromDatabase(): List<Album> {
-        return LastFmDatabase.getInstance(context).getLastFmDAO().getAllAlbums()
+    fun getAllCachedAlbumsFromDatabase(): List<Album> {
+        return LastFmDatabase.getInstance(context).getLastFmDAO().getAllCachedAlbums()
+    }
+
+    fun getAllCachedAlbumsLiveDataFromDatabase(): LiveData<List<Album>?> {
+        return LastFmDatabase.getInstance(context).getLastFmDAO().getAllCachedAlbumsLiveData()
     }
 
 }

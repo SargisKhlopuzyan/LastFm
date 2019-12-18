@@ -125,8 +125,12 @@ class ArtistsSearchAdapter(
         }
     }
 
-    override fun setItems(items: List<Artist>) {
-        submitList(items)
+    override fun setItems(items: List<Artist>?) {
+        if (items != null) {
+            submitList(items)
+        } else {
+            submitList(listOf())
+        }
     }
 
     override fun setNetworkState(newNetworkState: NetworkState?) {

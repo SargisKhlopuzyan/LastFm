@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
@@ -19,7 +20,7 @@ import javax.inject.Inject
 class ArtistsSearchFragment : DaggerFragmentX() {
 
     @Inject
-    lateinit var viewModelArtists: ArtistsSearchViewModel
+    lateinit var viewModel: ArtistsSearchViewModel
 
     private lateinit var binding: FragmentArtistsSearchBinding
 
@@ -36,10 +37,11 @@ class ArtistsSearchFragment : DaggerFragmentX() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        binding.viewModel = viewModelArtists
+        binding.viewModel = viewModel
 
         setupToolbar()
         setupRecyclerView()
+        setupSearchView()
         setupObservers()
     }
 
@@ -53,15 +55,23 @@ class ArtistsSearchFragment : DaggerFragmentX() {
         recyclerView.hasFixedSize()
 
         val adapter = ArtistsSearchAdapter(
-            viewModelArtists
+            viewModel
         )
         adapter.setHasStableIds(true)
         binding.recyclerView.adapter = adapter
     }
 
+    private fun setupSearchView() {
+        binding.searchView.isIconified = false
+    }
+
     private fun setupObservers() {
-        viewModelArtists.openTopAlbumsLiveData.observe(this) {
+        viewModel.openTopAlbumsLiveData.observe(this) {
             openTopAlbumsFragment(it)
+        }
+
+        viewModel.showToastLiveData.observe(this) {
+            Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
         }
     }
 

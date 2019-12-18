@@ -1,5 +1,6 @@
 package app.sargis.khlopuzyan.lastfm.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
 
@@ -27,6 +28,9 @@ interface LastFmDAO {
     fun getAllMatchedAlbums(artistName: String?): List<Album>
 
     @Query("SELECT * FROM albums")
-    fun getAllAlbums(): List<Album>
+    fun getAllCachedAlbumsLiveData(): LiveData<List<Album>?>
+
+    @Query("SELECT * FROM albums")
+    fun getAllCachedAlbums(): List<Album>
 
 }

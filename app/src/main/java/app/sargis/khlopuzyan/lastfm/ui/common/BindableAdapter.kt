@@ -8,6 +8,6 @@ import app.sargis.khlopuzyan.lastfm.util.NetworkState
  * @author Sargis Khlopuzyan (sargis.khlopuzyan@gmail.com)
  */
 interface BindableAdapter<T> {
-    fun setItems(items: T)
+    fun setItems(items: T?)
     fun setNetworkState(networkState: NetworkState?)
 }
