@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="album"
+            type="app.sargis.khlopuzyan.lastfm.model.top_albums.Album" />
+
+        <variable
+            name="viewModel"
+            type="app.sargis.khlopuzyan.lastfm.ui.cachedAlbums.CachedAlbumsViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:clickable="true"
+        android:fitsSystemWindows="true"
+        android:focusable="true"
+        android:background="@android:color/white"
+        android:onClick="@{()->viewModel.onAlbumClick(album)}">
+
+        <ImageView
+            android:id="@+id/imageViewAlbum"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:fitsSystemWindows="true"
+            android:focusable="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:setImageResource="@{album.image[1].text}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textViewArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:focusable="false"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:text="@{album.artist.name != null ? album.artist.name : ``}"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sizeTextNormal"
+            app:layout_constraintStart_toEndOf="@+id/imageViewAlbum"
+            app:layout_constraintTop_toTopOf="@+id/imageViewAlbum"
+            tools:text="Artist" />
+
+        <TextView
+            android:id="@+id/textViewAlbum"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:focusable="false"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:maxLines="6"
+            android:text="@{album.name != null ? album.name: ``}"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sizeTextSmall"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageViewAlbum"
+            app:layout_constraintTop_toBottomOf="@+id/textViewArtist"
+            tools:text="Album" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

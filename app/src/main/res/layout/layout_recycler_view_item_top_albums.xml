@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="album"
+            type="app.sargis.khlopuzyan.lastfm.model.top_albums.Album" />
+
+        <variable
+            name="viewModel"
+            type="app.sargis.khlopuzyan.lastfm.ui.top_albums.TopAlbumsViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:onClick="@{()->viewModel.onAlbumClick(album)}"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/imageViewAlbum"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:fitsSystemWindows="true"
+            android:focusable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setImageResource="@{album.image[1].text}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textViewAlbum"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:maxEms="2"
+            android:maxLines="2"
+            android:text="@{album.name}"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sizeTextNormal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/imageViewAlbum"
+            app:layout_constraintRight_toLeftOf="@+id/lottieAnimationView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Album Name" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/app_name"
+            android:elevation="3dp"
+            android:onClick="@{() -> viewModel.onAlbumCacheActionClick(album)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="false"
+            app:setItemDatabaseState="@{album}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

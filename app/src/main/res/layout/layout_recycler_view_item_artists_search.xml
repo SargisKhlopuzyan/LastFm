@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="artist"
+            type="app.sargis.khlopuzyan.lastfm.model.artists_search.Artist" />
+
+        <variable
+            name="viewModel"
+            type="app.sargis.khlopuzyan.lastfm.ui.artists_search.ArtistsSearchViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:onClick="@{() -> viewModel.onArtistClick(artist)}"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/imageViewArtist"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:fitsSystemWindows="true"
+            android:focusable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setImageResource="@{artist.image[1].text}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textViewArtist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:singleLine="true"
+            android:text="@{artist.name}"
+            android:textSize="@dimen/sizeTextNormal"
+            android:textColor="@color/colorText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/imageViewArtist"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Cher" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
