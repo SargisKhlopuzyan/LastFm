@@ -1,10 +1,11 @@
 package app.sargis.khlopuzyan.lastfm.ui.artists_search
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
@@ -14,8 +15,10 @@ import app.sargis.khlopuzyan.lastfm.R
 import app.sargis.khlopuzyan.lastfm.databinding.FragmentArtistsSearchBinding
 import app.sargis.khlopuzyan.lastfm.ui.common.DaggerFragmentX
 import app.sargis.khlopuzyan.lastfm.ui.top_albums.TopAlbumsFragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_cached_albums.*
 import javax.inject.Inject
+
 
 class ArtistsSearchFragment : DaggerFragmentX() {
 
@@ -71,8 +74,19 @@ class ArtistsSearchFragment : DaggerFragmentX() {
         }
 
         viewModel.showToastLiveData.observe(this) {
-            Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.toolbar, "$it", Snackbar.LENGTH_SHORT)
+                .show()
         }
+
+        viewModel.searchClickLiveData.observe(this) {
+            hideKeyboard(it)
+        }
+    }
+
+    private fun hideKeyboard(view: View) {
+        val inputMethodManager =
+            activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun openTopAlbumsFragment(

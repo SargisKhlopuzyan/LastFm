@@ -1,6 +1,5 @@
 package app.sargis.khlopuzyan.lastfm.ui.artists_search
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -134,10 +133,8 @@ class ArtistsSearchAdapter(
     }
 
     override fun setNetworkState(newNetworkState: NetworkState?) {
-        Log.e("LOG_TAG", "setNetworkState -> $newNetworkState")
         networkState = newNetworkState
-        //TODO
-        notifyDataSetChanged()
+        notifyItemChanged(0)
     }
 
     // ViewHolder

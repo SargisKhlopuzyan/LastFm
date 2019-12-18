@@ -158,7 +158,7 @@ class TopAlbumsViewModel constructor(
                 is Result.Success -> {
 
                     //TODO
-                    setSearchedTopAlbumsItemDatabaseState(
+                    syncSearchedTopAlbumsWithCached(
                         artistName,
                         resultTopAlbums.data.topalbums?.albums
                     )
@@ -169,17 +169,21 @@ class TopAlbumsViewModel constructor(
                 }
 
                 is Result.Error -> {
+                    showToastLiveData.value =
+                        "Something went wrong!\nError code: ${resultTopAlbums.errorCode}"
                     networkState.value = NetworkState.Failure(null/*resultTopAlbums.errorCode*/)
                 }
 
                 is Result.Failure -> {
+                    showToastLiveData.value =
+                        "Something went wrong!\nError message: ${resultTopAlbums.error?.message}"
                     networkState.value = NetworkState.Failure(resultTopAlbums.error)
                 }
             }
         }
     }
 
-    private fun setSearchedTopAlbumsItemDatabaseState(
+    private fun syncSearchedTopAlbumsWithCached(
         artistName: String,
         searchedTopAlbums: List<Album>?
     ) {

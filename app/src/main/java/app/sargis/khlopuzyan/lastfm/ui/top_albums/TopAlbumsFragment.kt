@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import app.sargis.khlopuzyan.lastfm.R
 import app.sargis.khlopuzyan.lastfm.databinding.FragmentTopAlbumsBinding
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
 import app.sargis.khlopuzyan.lastfm.ui.album_details.AlbumDetailsFragment
 import app.sargis.khlopuzyan.lastfm.ui.common.DaggerFragmentX
+import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
 class TopAlbumsFragment : DaggerFragmentX() {
@@ -74,7 +73,8 @@ class TopAlbumsFragment : DaggerFragmentX() {
         }
 
         viewModel.showToastLiveData.observe(this) {
-            Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.toolbar, "$it", Snackbar.LENGTH_SHORT)
+                .show()
         }
     }
 

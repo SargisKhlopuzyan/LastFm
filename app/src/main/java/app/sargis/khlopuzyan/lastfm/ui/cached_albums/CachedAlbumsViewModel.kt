@@ -15,8 +15,8 @@ class CachedAlbumsViewModel constructor(
 
     var cachedAlbumsLiveData = cachedAlbumsRepository.getAllCachedAlbumsLiveData()
 
-    fun onSearchClick(view: View) {
-        openSearchLiveData.value = view
+    fun onSearchClick(v: View) {
+        openSearchLiveData.value = v
     }
 
     fun onAlbumClick(album: Album) {

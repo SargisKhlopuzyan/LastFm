@@ -36,6 +36,7 @@
                     android:layout_weight="1"
                     app:defaultQueryHint="Type artist name"
                     app:iconifiedByDefault="false"
+                    android:imeOptions="flagNoExtractUi"
                     app:searchHintIcon="@null"
                     app:searchIcon="@null"
                     app:setOnQueryTextListener="@{viewModel.onQueryTextListener}" />
@@ -46,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:minHeight="0dp"
-                    android:onClick="@{() -> viewModel.onSearchClick()}"
+                    android:onClick="@{(v) -> viewModel.onSearchClick(v)}"
                     android:text="@string/search"
                     android:textAllCaps="false" />
 

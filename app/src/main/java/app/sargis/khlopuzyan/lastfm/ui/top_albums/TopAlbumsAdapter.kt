@@ -1,6 +1,5 @@
 package app.sargis.khlopuzyan.lastfm.ui.top_albums
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -133,21 +132,8 @@ class TopAlbumsAdapter(
     }
 
     override fun setNetworkState(newNetworkState: NetworkState?) {
-        Log.e("LOG_TAG", "setNetworkState -> $newNetworkState")
         networkState = newNetworkState
-        //TODO
-        notifyDataSetChanged()
-
-
-//        if (newNetworkState == NetworkState.Loaded) {
-//            if (hadExtraRow) {
-//                notifyItemRemoved(prevItemCount)
-//            } else {
-//                notifyItemInserted(super.getItemCount())
-//            }
-//        } else if (hasExtraRow && previousState != newNetworkState) {
-//            notifyItemChanged(itemCount - 1)
-//        }
+        notifyItemChanged(0)
     }
 
     class TopAlbumsViewHolder(private val binding: LayoutRecyclerViewItemTopAlbumsBinding) :

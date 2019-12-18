@@ -1,5 +1,6 @@
 package app.sargis.khlopuzyan.lastfm.ui.artists_search
 
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,12 +24,15 @@ class ArtistsSearchViewModel constructor(
     private var searchQuery: String = ""
 
     val openTopAlbumsLiveData: SingleLiveEvent<String> = SingleLiveEvent()
+    val searchClickLiveData: SingleLiveEvent<View> = SingleLiveEvent()
+
     val showToastLiveData: SingleLiveEvent<String> = SingleLiveEvent()
     val networkState = MutableLiveData<NetworkState>()
 
     val artistsLiveData = MutableLiveData<MutableList<Artist>>(mutableListOf())
 
-    fun onSearchClick() {
+    fun onSearchClick(v: View) {
+        searchClickLiveData.value = v
         loadedPageIndex = 0
         availablePages = 0
         artistName = searchQuery
