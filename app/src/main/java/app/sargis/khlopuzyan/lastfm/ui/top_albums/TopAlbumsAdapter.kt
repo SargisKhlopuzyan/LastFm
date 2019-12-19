@@ -12,7 +12,7 @@ import app.sargis.khlopuzyan.lastfm.databinding.LayoutRecyclerViewItemTopAlbumsB
 import app.sargis.khlopuzyan.lastfm.databinding.LayoutRecyclerViewItemTopAlbumsNetworkErrorBinding
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
 import app.sargis.khlopuzyan.lastfm.ui.common.BindableAdapter
-import app.sargis.khlopuzyan.lastfm.util.NetworkState
+import app.sargis.khlopuzyan.lastfm.util.DataLoadingState
 
 /**
  * Created by Sargis Khlopuzyan, on 12/18/2019.
@@ -23,7 +23,7 @@ class TopAlbumsAdapter(
     val viewModel: TopAlbumsViewModel
 ) : ListAdapter<Album?, RecyclerView.ViewHolder>(DiffCallback()), BindableAdapter<List<Album>> {
 
-    private var networkState: NetworkState? = null
+    private var dataLoadingState: DataLoadingState? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -69,7 +69,7 @@ class TopAlbumsAdapter(
 
     override fun getItemCount(): Int {
 
-        if (networkState == null) {
+        if (dataLoadingState == null) {
             return 0
         }
 
@@ -84,14 +84,14 @@ class TopAlbumsAdapter(
         when (getItemViewType(position)) {
 
             R.layout.layout_recycler_view_item_top_albums -> {
-                if (networkState is NetworkState.Failure && (itemCount > 1) && (position == itemCount - 2)) {
-                    viewModel.networkState.value = NetworkState.Loaded
+                if (dataLoadingState is DataLoadingState.Failure && (itemCount > 1) && (position == itemCount - 2)) {
+                    viewModel.dataLoadingStateLiveData.value = DataLoadingState.Loaded
                 }
                 (holder as TopAlbumsViewHolder).bindItem(getItem(position), viewModel)
             }
 
             R.layout.layout_recycler_view_item_loading -> {
-                if (networkState == NetworkState.Loaded && viewModel.hasExtraRow()) {
+                if (dataLoadingState == DataLoadingState.Loaded && viewModel.hasExtraRow()) {
                     viewModel.searchMoreAlbums()
                 }
             }
@@ -104,9 +104,9 @@ class TopAlbumsAdapter(
 
     override fun getItemViewType(position: Int): Int {
 
-        return when (networkState) {
+        return when (dataLoadingState) {
 
-            is NetworkState.Loaded, is NetworkState.Loading -> {
+            is DataLoadingState.Loaded, is DataLoadingState.Loading -> {
                 if (viewModel.hasExtraRow() && position == itemCount - 1) {
                     R.layout.layout_recycler_view_item_loading
                 } else {
@@ -114,7 +114,7 @@ class TopAlbumsAdapter(
                 }
             }
 
-            is NetworkState.Failure -> {
+            is DataLoadingState.Failure -> {
                 if (viewModel.hasExtraRow() && position == itemCount - 1) {
                     R.layout.layout_recycler_view_item_top_albums_network_error
                 } else {
@@ -134,8 +134,8 @@ class TopAlbumsAdapter(
         }
     }
 
-    override fun setNetworkState(newNetworkState: NetworkState?) {
-        networkState = newNetworkState
+    override fun setDataLoadingState(loadingState: DataLoadingState?) {
+        dataLoadingState = loadingState
         val pos = if (itemCount > 0) itemCount - 1 else 0
         notifyItemChanged(pos)
     }
@@ -168,7 +168,7 @@ class TopAlbumsAdapter(
 class DiffCallback : DiffUtil.ItemCallback<Album?>() {
 
     override fun areItemsTheSame(oldItem: Album, newItem: Album): Boolean {
-        return oldItem.name == newItem.name && oldItem.albumCacheState == newItem.albumCacheState
+        return oldItem.name == newItem.name && oldItem.cachedState == newItem.cachedState
     }
 
     override fun areContentsTheSame(oldItem: Album, newItem: Album): Boolean {

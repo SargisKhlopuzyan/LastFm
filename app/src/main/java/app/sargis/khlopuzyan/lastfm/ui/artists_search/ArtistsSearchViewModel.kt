@@ -10,7 +10,7 @@ import app.sargis.khlopuzyan.lastfm.model.artists_search.Artist
 import app.sargis.khlopuzyan.lastfm.model.artists_search.Results
 import app.sargis.khlopuzyan.lastfm.networking.callback.Result
 import app.sargis.khlopuzyan.lastfm.repository.ArtistsSearchRepository
-import app.sargis.khlopuzyan.lastfm.util.NetworkState
+import app.sargis.khlopuzyan.lastfm.util.DataLoadingState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -27,11 +27,14 @@ class ArtistsSearchViewModel constructor(
     val hideKeyboardLiveData: SingleLiveEvent<View> = SingleLiveEvent()
     val showToastLiveData: SingleLiveEvent<String> = SingleLiveEvent()
 
-    val networkState = MutableLiveData<NetworkState>()
+    val dataLoadingStateLiveData = MutableLiveData<DataLoadingState>()
 
     val artistsLiveData = MutableLiveData<MutableList<Artist>>(mutableListOf())
     val errorMessageLiveData = MutableLiveData<String>()
 
+    /**
+     * Handles search icon click
+     * */
     fun onSearchClick(v: View) {
         hideKeyboardLiveData.value = v
         loadedPageIndex = 0
@@ -41,11 +44,17 @@ class ArtistsSearchViewModel constructor(
         searchMoreArtists(searchQuery)
     }
 
-    fun retry(v: View) {
+    /**
+     * Handles retry icon click
+     * */
+    fun retryClick(v: View) {
         hideKeyboardLiveData.value = v
         searchMoreArtists()
     }
 
+    /**
+     * Handles artist list item click
+     * */
     fun onArtistClick(artist: Artist?) {
         openTopAlbumsLiveData.value = artist?.name
     }
@@ -64,13 +73,16 @@ class ArtistsSearchViewModel constructor(
         }
     }
 
+    /**
+     * Loads api next page artists
+     * */
     fun searchMoreArtists(artist: String? = artistName) {
 
         artist?.let {
 
             viewModelScope.launch(Dispatchers.Main) {
 
-                networkState.value = NetworkState.Loading
+                dataLoadingStateLiveData.value = DataLoadingState.Loading
 
                 when (val resultTopAlbums =
                     searchRepository.searchArtist(
@@ -79,48 +91,55 @@ class ArtistsSearchViewModel constructor(
                     )) {
 
                     is Result.Success -> {
-                        networkState.value = NetworkState.Loaded
-                        setPageInfo(resultTopAlbums.data.results)
+                        dataLoadingStateLiveData.value = DataLoadingState.Loaded
+                        setApiPageInfo(resultTopAlbums.data.results)
                         handleSearchResult(resultTopAlbums.data.results)
                     }
 
                     is Result.Error -> {
                         errorMessageLiveData.value =
-                            "Something went wrong!\nError code: ${resultTopAlbums.errorCode}"
-                        networkState.value =
-                            NetworkState.Failure(null /*resultTopAlbums.errorCode*/)
+                            "Something went wrong.\nError code: ${resultTopAlbums.errorCode}"
+                        dataLoadingStateLiveData.value =
+                            DataLoadingState.Failure(null /*resultTopAlbums.errorCode*/)
 
                     }
 
                     is Result.Failure -> {
                         errorMessageLiveData.value =
-                            "Something went wrong!\nError message: ${resultTopAlbums.error?.message}"
-                        networkState.value = NetworkState.Failure(resultTopAlbums.error)
+                            "Something went wrong.\nCheck your internet connection"
+                        dataLoadingStateLiveData.value = DataLoadingState.Failure(resultTopAlbums.error)
                     }
                 }
             }
         }
     }
 
+    /**
+     * Handles search result
+     * */
     private fun handleSearchResult(results: Results?) {
 
         var artists: MutableList<Artist>?
-        if (results?.artistmatches?.artist == null) {
+        if (results?.artistMatches?.artist == null) {
             artists = mutableListOf()
         } else {
             artists = artistsLiveData.value
-            artists?.addAll(results.artistmatches.artist)
+            artists?.addAll(results.artistMatches.artist)
         }
 
         artistsLiveData.value = artists
     }
 
+    /**
+     * Sets api info (loaded page index, available pages, etc)
+     *
+     * @param results results returned from api call
+     * */
+    private fun setApiPageInfo(results: Results?) {
 
-    private fun setPageInfo(results: Results?) {
+        this.artistName = results?.openSearchQuery?.searchTerms ?: ""
 
-        this.artistName = results?.opensearchQuery?.searchTerms ?: ""
-
-        val startPage = results?.opensearchQuery?.startPage?.toInt() ?: 0
+        val startPage = results?.openSearchQuery?.startPage?.toInt() ?: 0
         loadedPageIndex = startPage
 
         val itemsPerPage = results?.openSearchItemsPerPage?.toInt() ?: 50
@@ -133,7 +152,10 @@ class ArtistsSearchViewModel constructor(
         this.availablePages = availablePages
     }
 
+    /**
+     * Checks weather api has pages available
+     * */
     fun hasExtraRow(): Boolean =
-        (networkState.value != null && networkState.value != NetworkState.Loaded) || (loadedPageIndex < availablePages)
+        (dataLoadingStateLiveData.value != null && dataLoadingStateLiveData.value != DataLoadingState.Loaded) || (loadedPageIndex < availablePages)
 
 }

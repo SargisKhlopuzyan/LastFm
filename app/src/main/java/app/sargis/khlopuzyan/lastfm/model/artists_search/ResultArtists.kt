@@ -23,10 +23,10 @@ data class Results(
     val attr: Attr? = null,
 
     @Json(name = "artistmatches")
-    val artistmatches: Artistmatches? = null,
+    val artistMatches: ArtistMatches? = null,
 
     @Json(name = "opensearch:Query")
-    val opensearchQuery: OpensearchQuery? = null,
+    val openSearchQuery: OpenSearchQuery? = null,
 
     @Json(name = "opensearch:itemsPerPage")
     val openSearchItemsPerPage: String? = null,
@@ -48,7 +48,7 @@ data class Attr(
 )
 
 @JsonClass(generateAdapter = true)
-data class Artistmatches(
+data class ArtistMatches(
 
     @Json(name = "artist")
     val artist: List<Artist> = listOf()
@@ -90,7 +90,7 @@ data class Image(
 )
 
 @JsonClass(generateAdapter = true)
-data class OpensearchQuery(
+data class OpenSearchQuery(
 
     @Json(name = "#text")
     val text: String? = null,

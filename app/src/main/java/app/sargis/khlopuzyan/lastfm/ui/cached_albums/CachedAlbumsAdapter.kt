@@ -8,7 +8,7 @@ import app.sargis.khlopuzyan.lastfm.R
 import app.sargis.khlopuzyan.lastfm.databinding.LayoutRecyclerViewItemCachedAlbumsBinding
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
 import app.sargis.khlopuzyan.lastfm.ui.common.BindableAdapter
-import app.sargis.khlopuzyan.lastfm.util.NetworkState
+import app.sargis.khlopuzyan.lastfm.util.DataLoadingState
 
 /**
  * Created by Sargis Khlopuzyan, on 12/18/2019.
@@ -48,7 +48,7 @@ class CachedAlbumsAdapter(
         notifyDataSetChanged()
     }
 
-    override fun setNetworkState(networkState: NetworkState?) {
+    override fun setDataLoadingState(dataLoadingState: DataLoadingState?) {
 
     }
 

@@ -38,7 +38,7 @@ data class Album(
     val name: String? = null,
 
     @Json(name = "playcount")
-    val playcount: String? = null,
+    val playCount: String? = null,
 
     @Json(name = "tags")
     val tags: Tags? = null,
@@ -148,7 +148,7 @@ data class Streamable(
     val text: String? = null,
 
     @Json(name = "fulltrack")
-    val fulltrack: String? = null
+    val fullTrack: String? = null
 
 ) : Parcelable
 

@@ -1,6 +1,6 @@
 package app.sargis.khlopuzyan.lastfm.ui.common
 
-import app.sargis.khlopuzyan.lastfm.util.NetworkState
+import app.sargis.khlopuzyan.lastfm.util.DataLoadingState
 
 /**
  * Created by Sargis Khlopuzyan, on 12/18/2019.
@@ -9,5 +9,5 @@ import app.sargis.khlopuzyan.lastfm.util.NetworkState
  */
 interface BindableAdapter<T> {
     fun setItems(items: T?)
-    fun setNetworkState(networkState: NetworkState?)
+    fun setDataLoadingState(dataLoadingState: DataLoadingState?)
 }

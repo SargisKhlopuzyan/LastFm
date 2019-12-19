@@ -1,7 +1,7 @@
 package app.sargis.khlopuzyan.lastfm.database.converter
 
 import androidx.room.TypeConverter
-import app.sargis.khlopuzyan.lastfm.util.AlbumCacheState
+import app.sargis.khlopuzyan.lastfm.util.CachedState
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -15,19 +15,19 @@ class ItemDatabaseStateConverter {
     private val gson = Gson()
 
     @TypeConverter
-    fun stringToItemDatabaseState(data: String?): AlbumCacheState {
+    fun stringToItemDatabaseState(data: String?): CachedState {
 
         if (data == null) {
-            return AlbumCacheState.NotCached
+            return CachedState.NotCached
         }
 
-        val type = object : TypeToken<AlbumCacheState>() {}.type
+        val type = object : TypeToken<CachedState>() {}.type
 
-        return gson.fromJson<AlbumCacheState>(data, type)
+        return gson.fromJson<CachedState>(data, type)
     }
 
     @TypeConverter
-    fun listToString(someObjects: AlbumCacheState): String {
+    fun listToString(someObjects: CachedState): String {
         return gson.toJson(someObjects)
     }
 

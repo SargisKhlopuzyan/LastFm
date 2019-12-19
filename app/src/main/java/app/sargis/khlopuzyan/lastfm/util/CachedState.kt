@@ -5,7 +5,7 @@ package app.sargis.khlopuzyan.lastfm.util
  *
  * @author Sargis Khlopuzyan (sargis.khlopuzyan@gmail.com)
  */
-enum class AlbumCacheState {
+enum class CachedState {
     Cached,
     InProcess,
     NotCached,

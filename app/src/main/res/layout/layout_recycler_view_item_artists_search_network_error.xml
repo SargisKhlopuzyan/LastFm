@@ -25,7 +25,7 @@
             android:layout_gravity="left|center|center_vertical"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:onClick="@{(v) -> viewModel.retry(v)}"
+            android:onClick="@{(v) -> viewModel.retryClick(v)}"
             android:text="@string/retry" />
 
         <TextView

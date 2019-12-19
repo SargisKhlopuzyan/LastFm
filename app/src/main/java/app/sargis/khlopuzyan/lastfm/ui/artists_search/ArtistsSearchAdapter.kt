@@ -13,7 +13,7 @@ import app.sargis.khlopuzyan.lastfm.databinding.LayoutRecyclerViewItemArtistsSea
 import app.sargis.khlopuzyan.lastfm.databinding.LayoutRecyclerViewItemLoadingBinding
 import app.sargis.khlopuzyan.lastfm.model.artists_search.Artist
 import app.sargis.khlopuzyan.lastfm.ui.common.BindableAdapter
-import app.sargis.khlopuzyan.lastfm.util.NetworkState
+import app.sargis.khlopuzyan.lastfm.util.DataLoadingState
 
 /**
  * Created by Sargis Khlopuzyan, on 12/18/2019.
@@ -24,7 +24,7 @@ class ArtistsSearchAdapter(
     val viewModel: ArtistsSearchViewModel
 ) : ListAdapter<Artist?, RecyclerView.ViewHolder>(DiffCallback()), BindableAdapter<List<Artist>> {
 
-    private var networkState: NetworkState? = null
+    private var dataLoadingState: DataLoadingState? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -66,7 +66,7 @@ class ArtistsSearchAdapter(
 
     override fun getItemCount(): Int {
 
-        if (networkState == null) {
+        if (dataLoadingState == null) {
             return 0
         }
 
@@ -85,14 +85,14 @@ class ArtistsSearchAdapter(
         when (getItemViewType(position)) {
 
             R.layout.layout_recycler_view_item_artists_search -> {
-                if (networkState is NetworkState.Failure && (itemCount > 1) && (position == itemCount - 2)) {
-                    viewModel.networkState.value = NetworkState.Loaded
+                if (dataLoadingState is DataLoadingState.Failure && (itemCount > 1) && (position == itemCount - 2)) {
+                    viewModel.dataLoadingStateLiveData.value = DataLoadingState.Loaded
                 }
                 (holder as ArtistViewHolder).bindItem(getItem(position), viewModel)
             }
 
             R.layout.layout_recycler_view_item_loading -> {
-                if (networkState == NetworkState.Loaded && viewModel.hasExtraRow()) {
+                if (dataLoadingState == DataLoadingState.Loaded && viewModel.hasExtraRow()) {
                     viewModel.searchMoreArtists()
                 }
             }
@@ -105,9 +105,9 @@ class ArtistsSearchAdapter(
 
     override fun getItemViewType(position: Int): Int {
 
-        return when (networkState) {
+        return when (dataLoadingState) {
 
-            is NetworkState.Loaded, is NetworkState.Loading -> {
+            is DataLoadingState.Loaded, is DataLoadingState.Loading -> {
                 if (viewModel.hasExtraRow() && position == itemCount - 1) {
                     R.layout.layout_recycler_view_item_loading
                 } else {
@@ -115,7 +115,7 @@ class ArtistsSearchAdapter(
                 }
             }
 
-            is NetworkState.Failure -> {
+            is DataLoadingState.Failure -> {
                 if (viewModel.hasExtraRow() && position == itemCount - 1) {
                     R.layout.layout_recycler_view_item_artists_search_network_error
                 } else {
@@ -135,8 +135,8 @@ class ArtistsSearchAdapter(
         }
     }
 
-    override fun setNetworkState(newNetworkState: NetworkState?) {
-        networkState = newNetworkState
+    override fun setDataLoadingState(newDataLoadingState: DataLoadingState?) {
+        dataLoadingState = newDataLoadingState
         val pos = if (itemCount > 0) itemCount - 1 else 0
         notifyItemChanged(pos)
     }

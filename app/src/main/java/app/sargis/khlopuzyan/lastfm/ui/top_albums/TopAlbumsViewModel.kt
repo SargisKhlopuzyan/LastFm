@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import app.sargis.khlopuzyan.lastfm.helper.SingleLiveEvent
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Attr
-import app.sargis.khlopuzyan.lastfm.model.top_albums.Topalbums
+import app.sargis.khlopuzyan.lastfm.model.top_albums.TopAlbums
 import app.sargis.khlopuzyan.lastfm.networking.callback.Result
 import app.sargis.khlopuzyan.lastfm.repository.TopAlbumsRepository
-import app.sargis.khlopuzyan.lastfm.util.AlbumCacheState
-import app.sargis.khlopuzyan.lastfm.util.NetworkState
+import app.sargis.khlopuzyan.lastfm.util.CachedState
+import app.sargis.khlopuzyan.lastfm.util.DataLoadingState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -24,15 +24,21 @@ class TopAlbumsViewModel constructor(
 
     val openAlbumDetailLiveData: SingleLiveEvent<Album> = SingleLiveEvent()
     val showToastLiveData: SingleLiveEvent<String> = SingleLiveEvent()
-    val networkState = MutableLiveData<NetworkState>()
+    val dataLoadingStateLiveData = MutableLiveData<DataLoadingState>()
 
     var topAlbumsLiveData: MutableLiveData<MutableList<Album>> = MutableLiveData(mutableListOf())
     val errorMessageLiveData = MutableLiveData<String>()
 
-    fun retry() {
+    /**
+     * Handles retry icon click
+     * */
+    fun retryClick() {
         searchMoreAlbums()
     }
 
+    /**
+     * Handles album list item click
+     * */
     fun onAlbumClick(album: Album) {
         viewModelScope.launch {
 
@@ -48,12 +54,12 @@ class TopAlbumsViewModel constructor(
 
                 is Result.Error -> {
                     showToastLiveData.value =
-                        "Something went wrong!\nError code: ${albumInfo.errorCode}"
+                        "Something went wrong.\nError code: ${albumInfo.errorCode}"
                 }
 
                 is Result.Failure -> {
                     showToastLiveData.value =
-                        "Something went wrong!\nError message: ${albumInfo.error?.message}"
+                        "Something went wrong.\nCheck your internet connection"
                 }
             }
         }
@@ -61,12 +67,15 @@ class TopAlbumsViewModel constructor(
 
     // Caching
 
-    fun onAlbumCacheActionClick(album: Album) {
-        when (album.albumCacheState) {
-            AlbumCacheState.NotCached -> {
+    /**
+     * Handles caching icon click
+     * */
+    fun onCachingActionClick(album: Album) {
+        when (album.cachedState) {
+            CachedState.NotCached -> {
                 saveAlbumInCache(album)
             }
-            AlbumCacheState.Cached -> {
+            CachedState.Cached -> {
                 deleteAlbumFromCache(album)
             }
             else -> {
@@ -74,12 +83,17 @@ class TopAlbumsViewModel constructor(
         }
     }
 
+    /**
+     * Saves album in cache
+     *
+     * @param album album to save in cache
+     * */
     private fun saveAlbumInCache(album: Album) {
 
         viewModelScope.launch {
 
             val index: Int = topAlbumsLiveData.value?.indexOf(album)!!
-            setAnimationState(album, index, AlbumCacheState.InProcess)
+            setAlbumCachingState(album, index, CachedState.InProcess)
 
             when (val albumInfo = topAlbumsRepository.searchAlbumInfo(
                 artist = album.artist?.name ?: "",
@@ -87,42 +101,55 @@ class TopAlbumsViewModel constructor(
             )) {
 
                 is Result.Success -> {
-                    album.albumCacheState = AlbumCacheState.Cached
+                    album.cachedState = CachedState.Cached
                     album.tracks = albumInfo.data.album?.tracks?.track
                     topAlbumsRepository.saveTopAlbumInCache(album)
-                    album.albumCacheState = AlbumCacheState.InProcess
-                    setAnimationState(album, index, AlbumCacheState.Cached)
+                    album.cachedState = CachedState.InProcess
+                    setAlbumCachingState(album, index, CachedState.Cached)
                 }
 
                 is Result.Error -> {
                     showToastLiveData.value =
-                        "Unable to save album!\nError code: ${albumInfo.errorCode}"
-                    setAnimationState(album, index, AlbumCacheState.NotCached)
+                        "Unable to save album.\nError code: ${albumInfo.errorCode}"
+                    setAlbumCachingState(album, index, CachedState.NotCached)
                 }
 
                 is Result.Failure -> {
                     showToastLiveData.value =
-                        "Unable to save album!\nError message: ${albumInfo.error?.message}"
-                    setAnimationState(album, index, AlbumCacheState.NotCached)
+                        "Unable to save album.\nError message: ${albumInfo.error?.message}"
+                    setAlbumCachingState(album, index, CachedState.NotCached)
                 }
             }
         }
     }
 
+    /**
+     * Deletes album from cache
+     *
+     * @param album album to delete from cache
+     * */
     private fun deleteAlbumFromCache(album: Album) {
 
         viewModelScope.launch {
             val index: Int = topAlbumsLiveData.value?.indexOf(album)!!
-            setAnimationState(album, index, AlbumCacheState.InProcess)
+            setAlbumCachingState(album, index, CachedState.InProcess)
 
             topAlbumsRepository.deleteTopAlbumFromCache(album)
-            setAnimationState(album, index, AlbumCacheState.NotCached)
+            setAlbumCachingState(album, index, CachedState.NotCached)
         }
     }
 
-    private fun setAnimationState(album: Album, index: Int, albumCacheState: AlbumCacheState) {
+    /**
+     * Sets album caching state
+     * Uses to show caching animation
+     *
+     * @param album album
+     * @param index index in list
+     * @param cachedState cached state
+     * */
+    private fun setAlbumCachingState(album: Album, index: Int, cachedState: CachedState) {
 
-        var newAlbum = album.copy(albumCacheState = albumCacheState)
+        var newAlbum = album.copy(cachedState = cachedState)
         val newTopAlbums: MutableList<Album> = mutableListOf()
 
         newTopAlbums.addAll(topAlbumsLiveData.value!!)
@@ -142,13 +169,16 @@ class TopAlbumsViewModel constructor(
         }
     }
 
+    /**
+     * Loads api next page albums
+     * */
     fun searchMoreAlbums() {
 
         val artistName = artistNameLiveData.value ?: return
 
         viewModelScope.launch(Dispatchers.Main) {
 
-            networkState.value = NetworkState.Loading
+            dataLoadingStateLiveData.value = DataLoadingState.Loading
 
             when (val resultTopAlbums =
                 topAlbumsRepository.searchTopAlbums(
@@ -158,32 +188,34 @@ class TopAlbumsViewModel constructor(
 
                 is Result.Success -> {
 
-                    //TODO
                     syncSearchedTopAlbumsWithCached(
                         artistName,
-                        resultTopAlbums.data.topalbums?.albums
+                        resultTopAlbums.data.topAlbums?.albums
                     )
 
-                    networkState.value = NetworkState.Loaded
-                    setPageInfo(resultTopAlbums.data.topalbums?.attr)
-                    handleSearchResult(resultTopAlbums.data.topalbums)
+                    dataLoadingStateLiveData.value = DataLoadingState.Loaded
+                    setApiPageInfo(resultTopAlbums.data.topAlbums?.attr)
+                    handleSearchResult(resultTopAlbums.data.topAlbums)
                 }
 
                 is Result.Error -> {
                     errorMessageLiveData.value =
-                        "Something went wrong!\nError code: ${resultTopAlbums.errorCode}"
-                    networkState.value = NetworkState.Failure(null/*resultTopAlbums.errorCode*/)
+                        "Something went wrong.\nError code: ${resultTopAlbums.errorCode}"
+                    dataLoadingStateLiveData.value = DataLoadingState.Failure(null/*resultTopAlbums.errorCode*/)
                 }
 
                 is Result.Failure -> {
                     errorMessageLiveData.value =
-                        "Something went wrong!\nError message: ${resultTopAlbums.error?.message}"
-                    networkState.value = NetworkState.Failure(resultTopAlbums.error)
+                        "Something went wrong.\nCheck your internet connection"
+                    dataLoadingStateLiveData.value = DataLoadingState.Failure(resultTopAlbums.error)
                 }
             }
         }
     }
 
+    /**
+     * Syncs searched top albums' albumCacheState with cached one
+     * */
     private fun syncSearchedTopAlbumsWithCached(
         artistName: String,
         searchedTopAlbums: List<Album>?
@@ -203,31 +235,37 @@ class TopAlbumsViewModel constructor(
                 for (searchedTopAlbum in searchedTopAlbums) {
                     for (cacheTopAlbum in filteredCachedAlbums) {
                         if (searchedTopAlbum.name == cacheTopAlbum.name) {
-                            searchedTopAlbum.albumCacheState = AlbumCacheState.Cached
+                            searchedTopAlbum.cachedState = CachedState.Cached
                             break
                         }
                     }
                 }
             }
         }
-
     }
 
-    private fun handleSearchResult(topalbums: Topalbums?) {
+    /**
+     * Handles search result
+     * */
+    private fun handleSearchResult(topAlbums: TopAlbums?) {
 
         var albums: MutableList<Album>?
-        if (topalbums?.albums == null) {
+        if (topAlbums?.albums == null) {
             albums = mutableListOf()
         } else {
             albums = topAlbumsLiveData.value
-            albums?.addAll(topalbums.albums)
+            albums?.addAll(topAlbums.albums)
         }
 
         topAlbumsLiveData.value = albums
     }
 
-
-    private fun setPageInfo(attr: Attr?) {
+    /**
+     * Sets api info (loaded page index, available pages, etc)
+     *
+     * @param attr attr returned from api call
+     * */
+    private fun setApiPageInfo(attr: Attr?) {
 
         val page = attr?.page?.toInt() ?: 0
         val perPage = attr?.perPage?.toInt() ?: 50
@@ -243,8 +281,11 @@ class TopAlbumsViewModel constructor(
         this.availablePages = availablePages
     }
 
+    /**
+     * Checks weather api has pages available
+     * */
     fun hasExtraRow(): Boolean {
-        return (networkState.value != null && networkState.value != NetworkState.Loaded) || (loadedPageIndex < availablePages)
+        return (dataLoadingStateLiveData.value != null && dataLoadingStateLiveData.value != DataLoadingState.Loaded) || (loadedPageIndex < availablePages)
     }
 
 }

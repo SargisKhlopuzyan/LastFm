@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import app.sargis.khlopuzyan.lastfm.model.album_info.Track
-import app.sargis.khlopuzyan.lastfm.util.AlbumCacheState
+import app.sargis.khlopuzyan.lastfm.util.CachedState
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
@@ -18,12 +18,12 @@ import kotlinx.android.parcel.Parcelize
 data class ResultTopAlbums(
 
     @Json(name = "topalbums")
-    val topalbums: Topalbums? = null
+    val topAlbums: TopAlbums? = null
 
 )
 
 @JsonClass(generateAdapter = true)
-data class Topalbums(
+data class TopAlbums(
 
     @Json(name = "@attr")
     val attr: Attr? = null,
@@ -74,14 +74,14 @@ data class Album(
     val name: String? = null,
 
     @Json(name = "playcount")
-    val playcount: Int? = null,
+    val playCount: Int? = null,
 
     @Json(name = "url")
     val url: String? = null,
 
     var tracks: List<Track>? = listOf(),
 
-    var albumCacheState: AlbumCacheState = AlbumCacheState.NotCached
+    var cachedState: CachedState = CachedState.NotCached
 
 ) : Parcelable
 
