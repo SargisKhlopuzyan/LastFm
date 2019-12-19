@@ -36,6 +36,7 @@
                     android:layout_weight="1"
                     app:defaultQueryHint="Type artist name"
                     app:iconifiedByDefault="false"
+                    android:textCursorDrawable="@null"
                     android:imeOptions="flagNoExtractUi"
                     app:searchHintIcon="@null"
                     app:searchIcon="@null"
