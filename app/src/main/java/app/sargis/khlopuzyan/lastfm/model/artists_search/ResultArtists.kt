@@ -9,7 +9,7 @@ import com.squareup.moshi.JsonClass
  * @author Sargis Khlopuzyan (sargis.khlopuzyan@gmail.com)
  */
 @JsonClass(generateAdapter = true)
-data class Result(
+data class ResultArtists(
 
     @Json(name = "results")
     val results: Results? = null

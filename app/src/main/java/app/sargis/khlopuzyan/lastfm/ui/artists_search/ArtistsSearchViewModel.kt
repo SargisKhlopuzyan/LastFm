@@ -84,30 +84,31 @@ class ArtistsSearchViewModel constructor(
 
                 dataLoadingStateLiveData.value = DataLoadingState.Loading
 
-                when (val resultTopAlbums =
-                    searchRepository.searchArtist(
-                        page = (loadedPageIndex + 1).toString(),
-                        artist = artist
-                    )) {
+                val resultArtists = searchRepository.searchArtist(
+                    page = (loadedPageIndex + 1).toString(),
+                    artist = artist
+                )
+
+                when (resultArtists) {
 
                     is Result.Success -> {
                         dataLoadingStateLiveData.value = DataLoadingState.Loaded
-                        setApiPageInfo(resultTopAlbums.data.results)
-                        handleSearchResult(resultTopAlbums.data.results)
+                        setApiPageInfo(resultArtists.data.results)
+                        handleSearchResult(resultArtists.data.results)
                     }
 
                     is Result.Error -> {
                         errorMessageLiveData.value =
-                            "Something went wrong.\nError code: ${resultTopAlbums.errorCode}"
+                            "Something went wrong.\nError code: ${resultArtists.errorCode}"
                         dataLoadingStateLiveData.value =
                             DataLoadingState.Failure(null /*resultTopAlbums.errorCode*/)
-
                     }
 
                     is Result.Failure -> {
                         errorMessageLiveData.value =
                             "Something went wrong.\nCheck your internet connection"
-                        dataLoadingStateLiveData.value = DataLoadingState.Failure(resultTopAlbums.error)
+                        dataLoadingStateLiveData.value =
+                            DataLoadingState.Failure(resultArtists.error)
                     }
                 }
             }

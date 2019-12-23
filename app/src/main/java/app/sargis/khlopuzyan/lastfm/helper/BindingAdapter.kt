@@ -118,7 +118,7 @@ fun LottieAnimationView.setItemDatabaseState(album: Album?) {
 
         CachedState.Cached -> {
             repeatCount = LottieDrawable.INFINITE
-            setImageResource(R.drawable.ic_favorite_cheched)
+            setImageResource(R.drawable.ic_favorite_checked)
         }
 
         CachedState.InProcess -> {
@@ -129,7 +129,7 @@ fun LottieAnimationView.setItemDatabaseState(album: Album?) {
 
         CachedState.NotCached -> {
             repeatCount = LottieDrawable.INFINITE
-            setImageResource(R.drawable.ic_favorite_uncheched)
+            setImageResource(R.drawable.ic_favorite_unchecked)
         }
     }
 }

@@ -1,7 +1,6 @@
 package app.sargis.khlopuzyan.lastfm.networking.helper
 
 import app.sargis.khlopuzyan.lastfm.networking.callback.Result
-import retrofit2.HttpException
 import retrofit2.Response
 
 /**
@@ -9,7 +8,22 @@ import retrofit2.Response
  *
  * @author Sargis Khlopuzyan (sargis.khlopuzyan@gmail.com)
  */
+//fun <T : Any> Response<T>.getResult(): Result<T> {
+//    return if (this.isSuccessful) {
+//        val body = this.body()
+//        if (body != null) {
+//            Result.Success(body)
+//        } else {
+//            Result.Error(this.code(), this.errorBody())
+//        }
+//    } else {
+//        Result.Failure(HttpException(this))
+//    }
+//}
+
 fun <T : Any> Response<T>.getResult(): Result<T> {
+
+
     return if (this.isSuccessful) {
         val body = this.body()
         if (body != null) {
@@ -18,6 +32,6 @@ fun <T : Any> Response<T>.getResult(): Result<T> {
             Result.Error(this.code(), this.errorBody())
         }
     } else {
-        Result.Failure(HttpException(this))
+        Result.Error(this.code(), this.errorBody())
     }
 }

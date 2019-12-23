@@ -54,25 +54,30 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
     implementation 'androidx.fragment:fragment-ktx:1.1.0'
-    implementation 'androidx.activity:activity:1.1.0-rc02'
-    implementation 'androidx.activity:activity-ktx:1.1.0-rc02'
+    implementation 'androidx.activity:activity:1.1.0-rc03'
+    implementation 'androidx.activity:activity-ktx:1.1.0-rc03'
 
     // Lifecycle
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-rc01'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc01'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc01'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-rc03'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc03'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc03'
     kapt 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
-    kapt 'androidx.lifecycle:lifecycle-common-java8:2.2.0-rc01'
+    kapt 'androidx.lifecycle:lifecycle-common-java8:2.2.0-rc03'
 
     // Test
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2" // TODO DELETE
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.0-M1"
+    testImplementation 'io.mockk:mockk:1.9'
+    androidTestImplementation "android.arch.core:core-testing:1.1.1" // TODO DELETE
+    testImplementation "android.arch.core:core-testing:1.1.1"
 
     //Google
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "com.google.android.material:material:1.0.0"
 
     // Dagger

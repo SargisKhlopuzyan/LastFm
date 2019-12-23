@@ -48,21 +48,21 @@
                         android:id="@+id/imageView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxHeight="255dp"
                         android:adjustViewBounds="true"
+                        android:maxHeight="255dp"
                         android:scaleType="centerCrop"
                         app:layout_collapseMode="parallax"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                         app:setImageResource="@{viewModel.albumLiveData.image[3].text}"
                         tools:srcCompat="@tools:sample/avatars" />
 
                     <androidx.appcompat.widget.Toolbar
                         android:id="@+id/toolbar"
-                        app:layout_constraintTop_toTopOf="parent"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
                         android:fitsSystemWindows="true"
-                        app:layout_collapseMode="pin"/>
+                        app:layout_collapseMode="pin" />
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -85,14 +85,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:lineSpacingMultiplier="1.3"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp"
                         android:paddingLeft="8dp"
+                        android:paddingTop="16dp"
                         android:paddingRight="8dp"
-                        android:textSize="@dimen/sizeTextSmall"
+                        android:paddingBottom="16dp"
                         android:textColor="@color/colorText"
+                        android:textSize="@dimen/sizeTextSmall"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:setTrackListData="@{viewModel.albumLiveData.tracks}"
-                        app:layout_constraintTop_toBottomOf="@+id/textViewAlbum"
                         tools:lineHeight="?attr/actionBarSize" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
