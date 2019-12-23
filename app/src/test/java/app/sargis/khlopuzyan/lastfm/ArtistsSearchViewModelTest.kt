@@ -38,6 +38,7 @@ class ArtistsSearchViewModelTest {
     private val mockArtistsSearchRepository = mockk<ArtistsSearchRepository>()
 
     private val mockArtistsSearchJson = mockk<ResultArtists>()
+
     private val mockView = mockk<View>()
 
     @ExperimentalCoroutinesApi
@@ -64,23 +65,7 @@ class ArtistsSearchViewModelTest {
             mockArtistsSearchRepository.searchArtist(artist = name)
         } returns Result.Success(mockArtistsSearchJson)
 
-//        subjectArtistsSearchViewModel.searchMoreArtists(artist = name)
-//        coVerify(exactly = 2) {
-//            mockArtistsSearchRepository.searchArtist(artist = name)
-//        }
+        // TODO continue implementation
     }
-
-//    /**
-//     * RetryClick invokes searchMoreArtists
-//     * */
-//    @Test
-//    fun searchMoreArtistsTest() = testDispatcher.runBlockingTest {
-//
-//        val name = "Cher"
-//
-//        coEvery {
-//            subjectArtistsSearchViewModel.searchMoreArtists(artist = name)
-//        }
-//    }
 
 }

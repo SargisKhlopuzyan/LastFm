@@ -32,7 +32,6 @@ class ArtistsSearchRepositoryImpl(
         artist: String
     ): Result<ResultArtists> =
         withContext(coroutineScope.coroutineContext) {
-
             try {
                 return@withContext apiService.searchArtist(page = page, artist = artist).getResult()
             } catch (ex: Exception) {
