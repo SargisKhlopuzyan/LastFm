@@ -29,17 +29,25 @@ abstract class LastFmDatabase : RoomDatabase() {
     abstract fun getLastFmDAO(): LastFmDAO
 
     companion object {
+
+        @Volatile
         private var INSTANCE: LastFmDatabase? = null
 
         fun getInstance(context: Context): LastFmDatabase {
+
             if (INSTANCE == null) {
+
                 synchronized(LastFmDatabase::class) {
-                    INSTANCE = Room.databaseBuilder(
-                        context.applicationContext,
-                        LastFmDatabase::class.java, "last_fm.db"
-                    )
-                        .allowMainThreadQueries()
-                        .build()
+
+                    if (INSTANCE == null) {
+
+                        INSTANCE = Room.databaseBuilder(
+                            context.applicationContext,
+                            LastFmDatabase::class.java, "last_fm.db"
+                        )
+                            .allowMainThreadQueries()
+                            .build()
+                    }
                 }
             }
             return INSTANCE!!
@@ -49,5 +57,4 @@ abstract class LastFmDatabase : RoomDatabase() {
             INSTANCE = null
         }
     }
-
 }

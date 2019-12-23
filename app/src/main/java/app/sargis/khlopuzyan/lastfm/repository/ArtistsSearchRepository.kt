@@ -6,7 +6,6 @@ import app.sargis.khlopuzyan.lastfm.networking.callback.Result
 import app.sargis.khlopuzyan.lastfm.networking.helper.getResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 
 /**
  * Created by Sargis Khlopuzyan, on 12/17/2019.
@@ -35,22 +34,7 @@ class ArtistsSearchRepositoryImpl(
         withContext(coroutineScope.coroutineContext) {
 
             try {
-                val response: Response<ResultArtists> =
-                    apiService.searchArtist(page = page, artist = artist)
-
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    if (body != null) {
-                        return@withContext response.getResult()
-
-                    } else {
-                        return@withContext Result.Error(response.code(), response.errorBody())
-                    }
-                } else {
-                    return@withContext Result.Error(response.code(), response.errorBody())
-                }
-
-//                return@withContext apiService.searchArtist(page = page, artist = artist).getResult()
+                return@withContext apiService.searchArtist(page = page, artist = artist).getResult()
             } catch (ex: Exception) {
                 return@withContext Result.Failure(ex)
             }

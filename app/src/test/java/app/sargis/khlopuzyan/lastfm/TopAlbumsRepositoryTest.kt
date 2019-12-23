@@ -16,11 +16,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import okhttp3.ResponseBody
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
@@ -39,22 +35,18 @@ class TopAlbumsRepositoryTest {
     @get:Rule
     val instantExecutor = InstantTaskExecutorRule()
 
-    //    @Inject
-//    private lateinit var databaseManager: DatabaseManager
     private val mockDatabaseManager = mockk<DatabaseManager>()
 
     private val testDispatcher = TestCoroutineDispatcher()
-    private val mockApi = mockk<ApiService>()
-    private val mockResponse = mockk<Response<ResultTopAlbums>>()
+    private val mockApi = mockk<ApiService>(relaxed = true)
+    private val mockResponse = mockk<Response<ResultTopAlbums>>(relaxed = true)
     private val mockResult = mockk<ResultTopAlbums>()
-    private val mockResponseBody = mockk<ResponseBody>()
 
     private lateinit var subject: TopAlbumsRepositoryImpl
 
     @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
-
         subject = TopAlbumsRepositoryImpl(mockApi, mockDatabaseManager, MainScope())
         Dispatchers.setMain(testDispatcher)
     }
@@ -101,18 +93,6 @@ class TopAlbumsRepositoryTest {
             mockResponse.isSuccessful
         } returns false
 
-        every {
-            mockResponse.code()
-        } returns 2
-
-        every {
-            mockResponse.errorBody()
-        } returns mockResponseBody
-
-        every {
-            mockResponse.message()
-        } returns "Invalid service - This service does not exist"
-
         coEvery {
             mockApi.searchTopAlbums(page = page, artist = artistName)
         } returns mockResponse
@@ -138,11 +118,12 @@ class TopAlbumsRepositoryTest {
             mockApi.searchTopAlbums(page = page, artist = artistName)
         } returns Response.success(mockResult)
 
-        val resultArtists = subject.searchTopAlbums(
+        val result = subject.searchTopAlbums(
             page = page, artist = artistName
         )
 
-        assert(resultArtists is Result.Success)
+        assert(result is Result.Success)
+        Assert.assertEquals((result as Result.Success).data, mockResult)
     }
 
 }

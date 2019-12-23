@@ -15,11 +15,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import okhttp3.ResponseBody
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
@@ -40,10 +36,9 @@ class ArtistsSearchRepositoryTest {
 
     private val testDispatcher = TestCoroutineDispatcher()
 
-    private val mockApi = mockk<ApiService>()
-    private val mockResponse = mockk<Response<ResultArtists>>()
+    private val mockApi = mockk<ApiService>(relaxed = true)
+    private val mockResponse = mockk<Response<ResultArtists>>(relaxed = true)
     private val mockResult = mockk<ResultArtists>()
-    private val mockResponseBody = mockk<ResponseBody>()
 
     private lateinit var subject: ArtistsSearchRepositoryImpl
 
@@ -96,19 +91,6 @@ class ArtistsSearchRepositoryTest {
             mockResponse.isSuccessful
         } returns false
 
-        every {
-            mockResponse.code()
-        } returns 2
-
-        every {
-            mockResponse.errorBody()
-        } returns mockResponseBody
-
-        every {
-            mockResponse.message()
-        } returns "Invalid service - This service does not exist"
-
-
         coEvery {
             mockApi.searchArtist(page = page, artist = artistName)
         } returns mockResponse
@@ -134,11 +116,11 @@ class ArtistsSearchRepositoryTest {
             mockApi.searchArtist(page = page, artist = artistName)
         } returns Response.success(mockResult)
 
-        val resultArtists = subject.searchArtist(
+        val result = subject.searchArtist(
             page = page, artist = artistName
         )
-
-        assert(resultArtists is Result.Success)
+        assert(result is Result.Success)
+        Assert.assertEquals((result as Result.Success).data, mockResult)
     }
 
 }

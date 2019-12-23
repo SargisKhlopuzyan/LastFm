@@ -10,6 +10,7 @@ import javax.inject.Inject
  *
  * @author Sargis Khlopuzyan (sargis.khlopuzyan@gmail.com)
  */
+
 class DatabaseManager @Inject constructor(var context: Context) {
 
     fun saveAlbumInDatabase(album: Album): Long {
