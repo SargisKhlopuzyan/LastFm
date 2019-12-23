@@ -38,7 +38,6 @@ class ArtistsSearchRepositoryImpl(
                 val response: Response<ResultArtists> =
                     apiService.searchArtist(page = page, artist = artist)
 
-
                 if (response.isSuccessful) {
                     val body = response.body()
                     if (body != null) {
@@ -48,9 +47,7 @@ class ArtistsSearchRepositoryImpl(
                         return@withContext Result.Error(response.code(), response.errorBody())
                     }
                 } else {
-                    //TODO Problem with Testing
-//                    return@withContext Result.Error(response.code(), response.errorBody())
-                    return@withContext Result.Error(response.code(), null)
+                    return@withContext Result.Error(response.code(), response.errorBody())
                 }
 
 //                return@withContext apiService.searchArtist(page = page, artist = artist).getResult()

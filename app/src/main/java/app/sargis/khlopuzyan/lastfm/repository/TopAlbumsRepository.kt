@@ -9,6 +9,7 @@ import app.sargis.khlopuzyan.lastfm.networking.callback.Result
 import app.sargis.khlopuzyan.lastfm.networking.helper.getResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 /**
  * Created by Sargis Khlopuzyan, on 12/17/2019.
@@ -40,8 +41,23 @@ class TopAlbumsRepositoryImpl(
     override suspend fun searchTopAlbums(page: String, artist: String): Result<ResultTopAlbums> =
         withContext(coroutineScope.coroutineContext) {
             try {
-                return@withContext apiService.searchTopAlbums(page = page, artist = artist)
-                    .getResult()
+
+                val response: Response<ResultTopAlbums> =
+                    apiService.searchTopAlbums(page = page, artist = artist)
+
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
+                        return@withContext response.getResult()
+
+                    } else {
+                        return@withContext Result.Error(response.code(), response.errorBody())
+                    }
+                } else {
+                    return@withContext Result.Error(response.code(), response.errorBody())
+                }
+
+//                return@withContext apiService.searchTopAlbums(page = page, artist = artist).getResult()
             } catch (ex: Exception) {
                 return@withContext Result.Failure(ex)
             }
@@ -50,8 +66,23 @@ class TopAlbumsRepositoryImpl(
     override suspend fun searchAlbumInfo(artist: String, album: String): Result<ResultAlbumInfo> =
         withContext(coroutineScope.coroutineContext) {
             try {
-                return@withContext apiService.searchAlbumInfo(artist = artist, album = album)
-                    .getResult()
+
+                val response: Response<ResultAlbumInfo> =
+                    apiService.searchAlbumInfo(artist = artist, album = album)
+
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
+                        return@withContext response.getResult()
+
+                    } else {
+                        return@withContext Result.Error(response.code(), response.errorBody())
+                    }
+                } else {
+                    return@withContext Result.Error(response.code(), response.errorBody())
+                }
+
+//                return@withContext apiService.searchAlbumInfo(artist = artist, album = album).getResult()
             } catch (ex: Exception) {
                 return@withContext Result.Failure(ex)
             }

@@ -5,7 +5,6 @@ import app.sargis.khlopuzyan.lastfm.database.DatabaseManager
 import app.sargis.khlopuzyan.lastfm.model.top_albums.ResultTopAlbums
 import app.sargis.khlopuzyan.lastfm.networking.api.ApiService
 import app.sargis.khlopuzyan.lastfm.networking.callback.Result
-import app.sargis.khlopuzyan.lastfm.repository.ArtistsSearchRepositoryImpl
 import app.sargis.khlopuzyan.lastfm.repository.TopAlbumsRepositoryImpl
 import io.mockk.coEvery
 import io.mockk.every
@@ -17,6 +16,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import okhttp3.ResponseBody
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -25,14 +25,12 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
 import java.io.IOException
-import javax.inject.Inject
 
 /**
  * Created by Sargis Khlopuzyan, on 12/23/2019.
  *
  * @author Sargis Khlopuzyan (sargis.khlopuzyan@fcc.am)
  */
-/**
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class TopAlbumsRepositoryTest {
@@ -41,7 +39,7 @@ class TopAlbumsRepositoryTest {
     @get:Rule
     val instantExecutor = InstantTaskExecutorRule()
 
-//    @Inject
+    //    @Inject
 //    private lateinit var databaseManager: DatabaseManager
     private val mockDatabaseManager = mockk<DatabaseManager>()
 
@@ -49,6 +47,7 @@ class TopAlbumsRepositoryTest {
     private val mockApi = mockk<ApiService>()
     private val mockResponse = mockk<Response<ResultTopAlbums>>()
     private val mockResult = mockk<ResultTopAlbums>()
+    private val mockResponseBody = mockk<ResponseBody>()
 
     private lateinit var subject: TopAlbumsRepositoryImpl
 
@@ -107,6 +106,10 @@ class TopAlbumsRepositoryTest {
         } returns 2
 
         every {
+            mockResponse.errorBody()
+        } returns mockResponseBody
+
+        every {
             mockResponse.message()
         } returns "Invalid service - This service does not exist"
 
@@ -143,4 +146,3 @@ class TopAlbumsRepositoryTest {
     }
 
 }
-*/

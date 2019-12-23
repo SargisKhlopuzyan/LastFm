@@ -7,7 +7,6 @@ import app.sargis.khlopuzyan.lastfm.networking.callback.Result
 import app.sargis.khlopuzyan.lastfm.repository.ArtistsSearchRepository
 import app.sargis.khlopuzyan.lastfm.ui.artists_search.ArtistsSearchViewModel
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

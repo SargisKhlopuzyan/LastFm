@@ -15,6 +15,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import okhttp3.ResponseBody
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -42,6 +43,7 @@ class ArtistsSearchRepositoryTest {
     private val mockApi = mockk<ApiService>()
     private val mockResponse = mockk<Response<ResultArtists>>()
     private val mockResult = mockk<ResultArtists>()
+    private val mockResponseBody = mockk<ResponseBody>()
 
     private lateinit var subject: ArtistsSearchRepositoryImpl
 
@@ -98,9 +100,9 @@ class ArtistsSearchRepositoryTest {
             mockResponse.code()
         } returns 2
 
-//        every {
-//            mockResponse.errorBody()
-//        } returns
+        every {
+            mockResponse.errorBody()
+        } returns mockResponseBody
 
         every {
             mockResponse.message()
