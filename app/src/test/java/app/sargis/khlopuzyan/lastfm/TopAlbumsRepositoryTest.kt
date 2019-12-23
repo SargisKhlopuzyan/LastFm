@@ -63,15 +63,14 @@ class TopAlbumsRepositoryTest {
     @Test
     fun exceptionRequestTest() = testDispatcher.runBlockingTest {
 
-        val page = "1"
-        val artistName = "Cher"
-
         val exception = IOException()
 
         coEvery {
-            mockApi.searchArtist(page = page, artist = artistName)
+            mockApi.searchArtist(page = any(), artist = any())
         } throws exception
 
+        val page = "1"
+        val artistName = "Cher"
         val resultArtists = subject.searchTopAlbums(
             page = page, artist = artistName
         )
@@ -86,17 +85,16 @@ class TopAlbumsRepositoryTest {
     @Test
     fun errorRequestTest() = testDispatcher.runBlockingTest {
 
-        val page = "1"
-        val artistName = "Cher"
-
         every {
             mockResponse.isSuccessful
         } returns false
 
         coEvery {
-            mockApi.searchTopAlbums(page = page, artist = artistName)
+            mockApi.searchTopAlbums(page = any(), artist = any())
         } returns mockResponse
 
+        val page = "1"
+        val artistName = "Cher"
         val result = subject.searchTopAlbums(
             page = page, artist = artistName
         )
@@ -111,13 +109,12 @@ class TopAlbumsRepositoryTest {
     @Test
     fun successRequestTest() = testDispatcher.runBlockingTest {
 
-        val page = "1"
-        val artistName = "Cher"
-
         coEvery {
-            mockApi.searchTopAlbums(page = page, artist = artistName)
+            mockApi.searchTopAlbums(page = any(), artist = any())
         } returns Response.success(mockResult)
 
+        val page = "1"
+        val artistName = "Cher"
         val result = subject.searchTopAlbums(
             page = page, artist = artistName
         )

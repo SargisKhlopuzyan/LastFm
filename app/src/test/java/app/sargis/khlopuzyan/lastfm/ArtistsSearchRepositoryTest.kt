@@ -61,15 +61,14 @@ class ArtistsSearchRepositoryTest {
     @Test
     fun exceptionRequestTest() = testDispatcher.runBlockingTest {
 
-        val page = "1"
-        val artistName = "Cher"
-
         val exception = IOException()
 
         coEvery {
-            mockApi.searchArtist(page = page, artist = artistName)
+            mockApi.searchArtist(page = any(), artist = any())
         } throws exception
 
+        val page = "1"
+        val artistName = "Cher"
         val resultArtists = subject.searchArtist(
             page = page, artist = artistName
         )
@@ -84,17 +83,16 @@ class ArtistsSearchRepositoryTest {
     @Test
     fun errorRequestTest() = testDispatcher.runBlockingTest {
 
-        val page = "1"
-        val artistName = "Cher"
-
         every {
             mockResponse.isSuccessful
         } returns false
 
         coEvery {
-            mockApi.searchArtist(page = page, artist = artistName)
+            mockApi.searchArtist(page = any(), artist = any())
         } returns mockResponse
 
+        val page = "1"
+        val artistName = "Cher"
         val result = subject.searchArtist(
             page = page, artist = artistName
         )
@@ -109,13 +107,13 @@ class ArtistsSearchRepositoryTest {
     @Test
     fun successRequestTest() = testDispatcher.runBlockingTest {
 
-        val page = "1"
-        val artistName = "Cher"
 
         coEvery {
-            mockApi.searchArtist(page = page, artist = artistName)
+            mockApi.searchArtist(page = any(), artist = any())
         } returns Response.success(mockResult)
 
+        val page = "1"
+        val artistName = "Cher"
         val result = subject.searchArtist(
             page = page, artist = artistName
         )
