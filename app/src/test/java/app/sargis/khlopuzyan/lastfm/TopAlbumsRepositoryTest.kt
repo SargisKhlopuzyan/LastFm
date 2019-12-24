@@ -2,6 +2,8 @@ package app.sargis.khlopuzyan.lastfm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import app.sargis.khlopuzyan.lastfm.database.DatabaseManager
+import app.sargis.khlopuzyan.lastfm.model.album_info.ResultAlbumInfo
+import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
 import app.sargis.khlopuzyan.lastfm.model.top_albums.ResultTopAlbums
 import app.sargis.khlopuzyan.lastfm.networking.api.ApiService
 import app.sargis.khlopuzyan.lastfm.networking.callback.Result
@@ -39,8 +41,10 @@ class TopAlbumsRepositoryTest {
 
     private val testDispatcher = TestCoroutineDispatcher()
     private val mockApi = mockk<ApiService>(relaxed = true)
-    private val mockResponse = mockk<Response<ResultTopAlbums>>(relaxed = true)
-    private val mockResult = mockk<ResultTopAlbums>()
+    private val mockResponseTopAlbums = mockk<Response<ResultTopAlbums>>(relaxed = true)
+    private val mockResponseAlbumInfo = mockk<Response<ResultAlbumInfo>>(relaxed = true)
+    private val mockResultTopAlbums = mockk<ResultTopAlbums>()
+    private val mockResultAlbumInfo = mockk<ResultAlbumInfo>()
 
     private lateinit var subject: TopAlbumsRepositoryImpl
 
@@ -56,12 +60,14 @@ class TopAlbumsRepositoryTest {
         Dispatchers.resetMain()
     }
 
+    // Tests top albums requests
+
     /**
      * When request fails with an exception
      * Then emits [Result.Failure]
      */
     @Test
-    fun exceptionRequestTest() = testDispatcher.runBlockingTest {
+    fun exceptionRequestTopAlbumsTest() = testDispatcher.runBlockingTest {
 
         val exception = IOException()
 
@@ -71,11 +77,11 @@ class TopAlbumsRepositoryTest {
 
         val page = "1"
         val artistName = "Cher"
-        val resultArtists = subject.searchTopAlbums(
+        val result = subject.searchTopAlbums(
             page = page, artist = artistName
         )
 
-        assert(resultArtists is Result.Failure)
+        assert(result is Result.Failure)
     }
 
     /**
@@ -83,15 +89,15 @@ class TopAlbumsRepositoryTest {
      * Then emits [Result.Error]
      */
     @Test
-    fun errorRequestTest() = testDispatcher.runBlockingTest {
+    fun errorRequestTopAlbumsTest() = testDispatcher.runBlockingTest {
 
         every {
-            mockResponse.isSuccessful
+            mockResponseTopAlbums.isSuccessful
         } returns false
 
         coEvery {
             mockApi.searchTopAlbums(page = any(), artist = any())
-        } returns mockResponse
+        } returns mockResponseTopAlbums
 
         val page = "1"
         val artistName = "Cher"
@@ -104,14 +110,14 @@ class TopAlbumsRepositoryTest {
 
     /**
      * When request is successful
-     * Then emits [Result.Success] with ResultArtists
+     * Then emits [Result.Success] with ResultTopAlbums
      */
     @Test
-    fun successRequestTest() = testDispatcher.runBlockingTest {
+    fun successRequestTopAlbumsTest() = testDispatcher.runBlockingTest {
 
         coEvery {
             mockApi.searchTopAlbums(page = any(), artist = any())
-        } returns Response.success(mockResult)
+        } returns Response.success(mockResultTopAlbums)
 
         val page = "1"
         val artistName = "Cher"
@@ -120,7 +126,129 @@ class TopAlbumsRepositoryTest {
         )
 
         assert(result is Result.Success)
-        Assert.assertEquals((result as Result.Success).data, mockResult)
+        Assert.assertEquals((result as Result.Success).data, mockResultTopAlbums)
+    }
+
+
+    // Tests album info requests
+
+    /**
+     * When request fails with an exception
+     * Then emits [Result.Failure]
+     */
+    @Test
+    fun exceptionRequestAlbumInfoTest() = testDispatcher.runBlockingTest {
+
+        val exception = IOException()
+
+        coEvery {
+            mockApi.searchAlbumInfo(artist = any(), album = any())
+        } throws exception
+
+        val artistName = "Cher"
+        val albumName = "Believe"
+        val result = subject.searchAlbumInfo(
+            artist = artistName, album = albumName
+        )
+
+        assert(result is Result.Failure)
+    }
+
+    /**
+     * When request fails with an error
+     * Then emits [Result.Error]
+     */
+    @Test
+    fun errorRequestAlbumInfoTest() = testDispatcher.runBlockingTest {
+
+        every {
+            mockResponseTopAlbums.isSuccessful
+        } returns false
+
+        coEvery {
+            mockApi.searchAlbumInfo(artist = any(), album = any())
+        } returns mockResponseAlbumInfo
+
+        val artistName = "Cher"
+        val albumName = "Believe"
+        val result = subject.searchAlbumInfo(
+            artist = artistName, album = albumName
+        )
+
+        assert(result is Result.Error)
+    }
+
+    /**
+     * When request is successful
+     * Then emits [Result.Success] with ResultTopAlbums
+     */
+    @Test
+    fun successRequestAlbumInfoTest() = testDispatcher.runBlockingTest {
+
+        coEvery {
+            mockApi.searchAlbumInfo(artist = any(), album = any())
+        } returns Response.success(mockResultAlbumInfo)
+
+        val artistName = "Cher"
+        val albumName = "Believe"
+        val result = subject.searchAlbumInfo(
+            artist = artistName, album = albumName
+        )
+
+        assert(result is Result.Success)
+        Assert.assertEquals((result as Result.Success).data, mockResultAlbumInfo)
+    }
+
+    // Tests database functions
+
+    /**
+     * Tests fetching all top albums from cache
+     * **/
+    @Test
+    fun getAllTopAlbumsFromCacheTest() = testDispatcher.runBlockingTest {
+
+        var allCachedAlbums: List<Album> = listOf()
+        every {
+            mockDatabaseManager.getAllCachedAlbumsFromDatabase()
+        } returns allCachedAlbums
+
+        val albums = subject.getAllTopAlbumsFromCache()
+
+        Assert.assertEquals(albums, allCachedAlbums)
+    }
+
+    /**
+     * Tests saving top album in cache
+     * **/
+    @Test
+    fun saveTopAlbumInCacheTest() = testDispatcher.runBlockingTest {
+
+        var id = 1.toLong()
+        every {
+            mockDatabaseManager.saveAlbumInDatabase(album = any())
+        } returns id
+
+        val album = Album()
+        val savedId = subject.saveTopAlbumInCache(album = album)
+
+        Assert.assertEquals(id, savedId)
+    }
+
+    /**
+     * Tests deleting top album from cache
+     * **/
+    @Test
+    fun deleteTopAlbumFromCacheTest() = testDispatcher.runBlockingTest {
+
+        var id = 1
+        every {
+            mockDatabaseManager.deleteAlbumFromDatabase(album = any())
+        } returns id
+
+        val album = Album()
+        val deleteId = subject.deleteTopAlbumFromCache(album = album)
+
+        Assert.assertEquals(id, deleteId)
     }
 
 }
