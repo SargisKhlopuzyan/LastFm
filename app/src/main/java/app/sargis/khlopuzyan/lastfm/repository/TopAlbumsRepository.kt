@@ -1,5 +1,6 @@
 package app.sargis.khlopuzyan.lastfm.repository
 
+import androidx.lifecycle.LiveData
 import app.sargis.khlopuzyan.lastfm.database.DatabaseManager
 import app.sargis.khlopuzyan.lastfm.model.album_info.ResultAlbumInfo
 import app.sargis.khlopuzyan.lastfm.model.top_albums.Album
@@ -20,6 +21,8 @@ interface TopAlbumsRepository {
     suspend fun searchTopAlbums(page: String = "1", artist: String): Result<ResultTopAlbums>
 
     suspend fun searchAlbumInfo(artist: String, album: String): Result<ResultAlbumInfo>
+
+    fun getAllCachedAlbumsLiveData(): LiveData<List<Album>?>
 
     suspend fun getAllTopAlbumsFromCache(): List<Album>?
 
@@ -56,6 +59,10 @@ class TopAlbumsRepositoryImpl(
                 return@withContext Result.Failure(ex)
             }
         }
+
+    override fun getAllCachedAlbumsLiveData(): LiveData<List<Album>?> {
+        return databaseManager.getAllCachedAlbumsLiveDataFromDatabase()
+    }
 
     override suspend fun getAllTopAlbumsFromCache(): List<Album> =
         databaseManager.getAllCachedAlbumsFromDatabase()

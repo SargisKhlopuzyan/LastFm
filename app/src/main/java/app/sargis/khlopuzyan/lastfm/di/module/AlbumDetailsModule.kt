@@ -2,8 +2,8 @@ package app.sargis.khlopuzyan.lastfm.di.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import app.sargis.khlopuzyan.lastfm.database.DatabaseManager
 import app.sargis.khlopuzyan.lastfm.di.annotation.ViewModelKey
+import app.sargis.khlopuzyan.lastfm.repository.AlbumDetailsRepository
 import app.sargis.khlopuzyan.lastfm.ui.album_details.AlbumDetailsFragment
 import app.sargis.khlopuzyan.lastfm.ui.album_details.AlbumDetailsViewModel
 import dagger.Module
@@ -28,8 +28,8 @@ interface AlbumDetailsModule {
         @IntoMap
         @ViewModelKey(AlbumDetailsViewModel::class)
         fun provideDetailViewModel(
-            databaseManager: DatabaseManager
-        ): ViewModel = AlbumDetailsViewModel(databaseManager)
+            albumDetailsRepository: AlbumDetailsRepository
+        ): ViewModel = AlbumDetailsViewModel(albumDetailsRepository)
     }
 
     @Module
