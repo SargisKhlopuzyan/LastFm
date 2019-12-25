@@ -20,7 +20,6 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:clickable="true"
-        android:fitsSystemWindows="true"
         android:focusable="true"
         android:background="@android:color/white"
         android:onClick="@{()->viewModel.onAlbumClick(album)}">
@@ -32,7 +31,6 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:fitsSystemWindows="true"
             android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

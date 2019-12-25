@@ -27,7 +27,6 @@
             android:id="@+id/imageViewAlbum"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:fitsSystemWindows="true"
             android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

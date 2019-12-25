@@ -29,6 +29,16 @@ class TopAlbumsViewModel constructor(
     var topAlbumsLiveData: MutableLiveData<MutableList<Album>> = MutableLiveData(mutableListOf())
     val errorMessageLiveData = MutableLiveData<String>()
 
+    var cachedAlbumsLiveData = topAlbumsRepository.getAllCachedAlbumsLiveData().observeForever {
+        val artistName = artistNameLiveData.value ?: return@observeForever
+        it?.let {
+            syncSearchedTopAlbumsWithCached(
+                artistName,
+                topAlbumsLiveData.value
+            )
+        }
+    }
+
     /**
      * Handles retry icon click
      * */
@@ -201,7 +211,8 @@ class TopAlbumsViewModel constructor(
                 is Result.Error -> {
                     errorMessageLiveData.value =
                         "Something went wrong.\nError code: ${resultTopAlbums.errorCode}"
-                    dataLoadingStateLiveData.value = DataLoadingState.Failure(null/*resultTopAlbums.errorCode*/)
+                    dataLoadingStateLiveData.value =
+                        DataLoadingState.Failure(null/*resultTopAlbums.errorCode*/)
                 }
 
                 is Result.Failure -> {
@@ -220,7 +231,6 @@ class TopAlbumsViewModel constructor(
         artistName: String,
         searchedTopAlbums: List<Album>?
     ) {
-
         searchedTopAlbums?.let {
 
             viewModelScope.launch {
@@ -234,6 +244,7 @@ class TopAlbumsViewModel constructor(
 
                 for (searchedTopAlbum in searchedTopAlbums) {
                     for (cacheTopAlbum in filteredCachedAlbums) {
+                        searchedTopAlbum.cachedState = CachedState.NotCached
                         if (searchedTopAlbum.name == cacheTopAlbum.name) {
                             searchedTopAlbum.cachedState = CachedState.Cached
                             break

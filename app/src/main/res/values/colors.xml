@@ -5,4 +5,5 @@
     <color name="colorAccent">#E4141E</color>
     <color name="colorText">#242424</color>
     <color name="colorErrorBackground">#242424</color>
+    <color name="colorToolbarTransparentBackground">#44FFFFFF</color>
 </resources>

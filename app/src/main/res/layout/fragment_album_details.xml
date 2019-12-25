@@ -15,20 +15,17 @@
         android:id="@+id/drawer_design_support_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:fitsSystemWindows="true">
+        android:background="@android:color/white">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/rootLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
             app:expandedTitleMarginStart="3dp">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
                 android:theme="@style/ThemeOverlay.AppCompat.Light">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -37,12 +34,8 @@
                     android:layout_height="match_parent"
                     app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:contentScrim="?attr/colorPrimaryDark"
-                    app:expandedTitleMarginEnd="8dp"
-                    app:expandedTitleMarginStart="8dp"
                     app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                    app:title="@{(viewModel.albumLiveData.artist.name  ?? ``) + ` - ` + (viewModel.albumLiveData.name ?? ``)}"
-                    tools:title="Artist">
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                     <ImageView
                         android:id="@+id/imageView"
@@ -61,8 +54,46 @@
                         android:id="@+id/toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        android:fitsSystemWindows="true"
+                        android:layout_gravity="bottom"
+                        android:visibility="invisible"
                         app:layout_collapseMode="pin" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_gravity="bottom"
+                        android:background="@color/colorToolbarTransparentBackground"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        app:layout_collapseMode="pin">
+
+                        <TextView
+                            android:id="@+id/textViewTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="@{(viewModel.albumLiveData.artist.name  ?? ``) + ` - ` + (viewModel.albumLiveData.name ?? ``)}"
+                            android:textColor="@color/colorText"
+                            android:textSize="@dimen/sizeTextNormal"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/lottieAnimationView"
+                            tools:text="Artist" />
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/lottieAnimationView"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="bottom|right"
+                            android:elevation="3dp"
+                            android:onClick="@{() -> viewModel.onCachingActionClick()}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:lottie_autoPlay="false"
+                            app:lottie_loop="false"
+                            app:setItemDatabaseState="@{viewModel.albumLiveData}" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 

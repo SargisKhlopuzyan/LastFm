@@ -140,11 +140,28 @@ class ArtistsSearchViewModel constructor(
 
         this.artistName = results?.openSearchQuery?.searchTerms ?: ""
 
-        val startPage = results?.openSearchQuery?.startPage?.toInt() ?: 0
+        val startPage = try {
+            results?.openSearchQuery?.startPage?.toInt() ?: 0
+        } catch (ex: NumberFormatException) {
+            0
+        }
+
         loadedPageIndex = startPage
 
-        val itemsPerPage = results?.openSearchItemsPerPage?.toInt() ?: 50
-        val totalResults = results?.openSearchTotalResults?.toInt() ?: 0
+        val itemsPerPage =
+            try {
+                results?.openSearchItemsPerPage?.toInt() ?: 50
+            } catch (ex: NumberFormatException) {
+                50
+            }
+
+        val totalResults =
+            try {
+                results?.openSearchTotalResults?.toInt() ?: 0
+            } catch (ex: NumberFormatException) {
+                50
+            }
+
         var availablePages = totalResults / itemsPerPage
         //TODO Last.fm API Bug
         if (availablePages > 200) {

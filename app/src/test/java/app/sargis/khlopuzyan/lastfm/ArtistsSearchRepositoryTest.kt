@@ -107,6 +107,9 @@ class ArtistsSearchRepositoryTest {
     @Test
     fun successRequestTest() = testDispatcher.runBlockingTest {
 
+        every {
+            mockResponse.isSuccessful
+        } returns true
 
         coEvery {
             mockApi.searchArtist(page = any(), artist = any())

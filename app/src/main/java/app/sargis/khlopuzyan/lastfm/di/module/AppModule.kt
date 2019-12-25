@@ -92,6 +92,15 @@ abstract class AppModule {
                 databaseManager,
                 CoroutineScope(Job() + Dispatchers.IO)
             )
+
+        @Provides
+        @Singleton
+        fun provideAlbumDetailsRepository(
+            databaseManager: DatabaseManager
+        ): AlbumDetailsRepository =
+            AlbumDetailsRepositoryImpl(
+                databaseManager
+            )
     }
 
 }
