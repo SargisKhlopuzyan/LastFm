@@ -1,7 +1,5 @@
 package app.sargis.khlopuzyan.lastfm
 
-import android.view.View
-
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import app.sargis.khlopuzyan.lastfm.model.artists_search.Artist
@@ -11,7 +9,6 @@ import app.sargis.khlopuzyan.lastfm.repository.ArtistsSearchRepository
 import app.sargis.khlopuzyan.lastfm.ui.artists_search.ArtistsSearchViewModel
 import app.sargis.khlopuzyan.lastfm.util.DataLoadingState
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -20,11 +17,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import retrofit2.Response
+import org.junit.*
 
 /**
  * Created by Sargis Khlopuzyan, on 12/20/2019.
@@ -43,11 +36,7 @@ class ArtistsSearchViewModelTest {
     private lateinit var subject: ArtistsSearchViewModel
 
     private val mockArtistsSearchRepository = mockk<ArtistsSearchRepository>()
-    private val mockResult = mockk<Result<ResultArtists>>(relaxed = true)
-    private val mockResponse = mockk<Response<ResultArtists>>(relaxed = true)
-    private val mockArtistsJson = mockk<ResultArtists>(relaxed = true)
-
-    private val mockView = mockk<View>()
+    private val mockResultArtists = mockk<ResultArtists>(relaxed = true)
 
     @ExperimentalCoroutinesApi
     @Before
@@ -65,15 +54,13 @@ class ArtistsSearchViewModelTest {
      * RetryClick invokes searchArtist
      * */
     @Test
-    fun errorRetryClickSearchArtistTest() = testDispatcher.runBlockingTest {
+    fun errorSearchMoreArtistsTest() = testDispatcher.runBlockingTest {
 
-        every {
-            mockResponse.isSuccessful
-        } returns false
+        val errorCode = 2
 
         coEvery {
             mockArtistsSearchRepository.searchArtist(artist = any())
-        } returns mockResult
+        } returns Result.Error(errorCode, null)
 
         val dataLoadingStateObserver = LoggingObserver<DataLoadingState>()
         val errorMessageObserver = LoggingObserver<String>()
@@ -86,46 +73,68 @@ class ArtistsSearchViewModelTest {
         val artistName = "Cher"
         subject.searchMoreArtists(artist = artistName)
 
+        val dataLoadingState = dataLoadingStateObserver.lastValue
+        val errorMessage = errorMessageObserver.lastValue
+        val artists = artistsObserver.lastValue
+
+        assert(dataLoadingState is DataLoadingState.Failure)
+        assertEquals(errorMessage, "Something went wrong.\nError code: $errorCode")
+        assert(artists == null || artists.isEmpty())
+    }
+
+    @Test
+    fun failureSearchMoreArtistTest() = testDispatcher.runBlockingTest {
+
+        coEvery {
+            mockArtistsSearchRepository.searchArtist(artist = any())
+        } returns Result.Failure(null)
+
+        val dataLoadingStateObserver = LoggingObserver<DataLoadingState>()
+        val errorMessageObserver = LoggingObserver<String>()
+        val artistsObserver = LoggingObserver<MutableList<Artist>>()
+
+        subject.dataLoadingStateLiveData.observeForever(dataLoadingStateObserver)
+        subject.errorMessageLiveData.observeForever(errorMessageObserver)
+        subject.artistsLiveData.observeForever(artistsObserver)
+
+        val artistName = "Cher"
+        subject.searchMoreArtists(artist = artistName)
 
         val dataLoadingState = dataLoadingStateObserver.lastValue
         val errorMessage = errorMessageObserver.lastValue
         val artists = artistsObserver.lastValue
 
-        assertEquals(dataLoadingState, DataLoadingState.Loading)
-        assertEquals(dataLoadingState, DataLoadingState.Loading)
-        assertEquals(artists, mutableListOf<Artist>())
+        assert(dataLoadingState is DataLoadingState.Failure)
+        assertEquals(errorMessage, "Something went wrong.\nCheck your internet connection")
+        assert(artists == null || artists.isEmpty())
     }
 
-    /**
-     * RetryClick invokes searchArtist
-     * */
     @Test
-    fun successRetryClickSearchArtistTest() = testDispatcher.runBlockingTest {
-
-        every {
-            mockResponse.isSuccessful
-        } returns true
+    fun successSearchMoreArtistsTest() = testDispatcher.runBlockingTest {
 
         coEvery {
             mockArtistsSearchRepository.searchArtist(artist = any())
-        } returns Result.Success(mockArtistsJson)
+        } returns Result.Success(mockResultArtists)
+
+        val dataLoadingStateObserver = LoggingObserver<DataLoadingState>()
+        val errorMessageObserver = LoggingObserver<String>()
+        val artistsObserver = LoggingObserver<MutableList<Artist>>()
+
+        subject.dataLoadingStateLiveData.observeForever(dataLoadingStateObserver)
+        subject.errorMessageLiveData.observeForever(errorMessageObserver)
+        subject.artistsLiveData.observeForever(artistsObserver)
 
         val artistName = "Cher"
         subject.searchMoreArtists(artist = artistName)
 
-        val dataLoadingStateObserver = LoggingObserver<DataLoadingState>()
-        val errorMessageObserver = LoggingObserver<String>()
-
-        subject.dataLoadingStateLiveData.observeForever(dataLoadingStateObserver)
-        subject.errorMessageLiveData.observeForever(errorMessageObserver)
-
         val dataLoadingState = dataLoadingStateObserver.lastValue
         val errorMessage = errorMessageObserver.lastValue
+        val artists = artistsObserver.lastValue
 
-        assertEquals(dataLoadingState, DataLoadingState.Loaded)
+        assert(dataLoadingState is DataLoadingState.Loaded)
         assertEquals(errorMessage, null)
+        Assert.assertEquals(mockResultArtists.results?.artistMatches?.artist?.size, artists?.size)
     }
-
 
     /**
      * Observer logs any values it receives

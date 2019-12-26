@@ -101,14 +101,14 @@ class ArtistsSearchViewModel constructor(
                         errorMessageLiveData.value =
                             "Something went wrong.\nError code: ${resultArtists.errorCode}"
                         dataLoadingStateLiveData.value =
-                            DataLoadingState.Failure(null /*resultTopAlbums.errorCode*/)
+                            DataLoadingState.Failure(Exception("${resultArtists.errorCode}"))
                     }
 
                     is Result.Failure -> {
                         errorMessageLiveData.value =
                             "Something went wrong.\nCheck your internet connection"
                         dataLoadingStateLiveData.value =
-                            DataLoadingState.Failure(resultArtists.error)
+                            DataLoadingState.Failure(resultArtists.throwable)
                     }
                 }
             }

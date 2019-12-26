@@ -126,7 +126,7 @@ class TopAlbumsViewModel constructor(
 
                 is Result.Failure -> {
                     showToastLiveData.value =
-                        "Unable to save album.\nError message: ${albumInfo.error?.message}"
+                        "Unable to save album.\nError message: ${albumInfo.throwable?.message}"
                     setAlbumCachingState(album, index, CachedState.NotCached)
                 }
             }
@@ -218,7 +218,7 @@ class TopAlbumsViewModel constructor(
                 is Result.Failure -> {
                     errorMessageLiveData.value =
                         "Something went wrong.\nCheck your internet connection"
-                    dataLoadingStateLiveData.value = DataLoadingState.Failure(resultTopAlbums.error)
+                    dataLoadingStateLiveData.value = DataLoadingState.Failure(resultTopAlbums.throwable)
                 }
             }
         }
